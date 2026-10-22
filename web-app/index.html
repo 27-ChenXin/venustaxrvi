@@ -1,0 +1,2033 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<!-- <meta name="viewport" content="width=1080, initial-scale=1, user-scalable=no, viewport-fit=cover"/> -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<!-- Kiosk / web-app hints -->
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-touch-fullscreen" content="yes"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+
+<link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
+<link rel="manifest" href="/favicons/site.webmanifest">
+<title>Immersive AI Cosplayers MultiVerse</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- QR Code generator -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "primary":                  "#c3f5ff",
+        "primary-container":        "#00e5ff",
+        "on-primary":               "#000000",
+        "on-primary-fixed":         "#000000",
+        "secondary":                "#b0c6ff",
+        "surface":                  "#000000",
+        "surface-dim":              "#000000",
+        "surface-bright":           "#1a1a1a",
+        "surface-container-lowest": "#050505",
+        "surface-container-low":    "#0a0a0a",
+        "surface-container":        "#0f0f0f",
+        "surface-container-high":   "#161616",
+        "surface-container-highest":"#1e1e1e",
+        "surface-variant":          "#1a1a1a",
+        "on-surface":               "#ffffff",
+        "on-surface-variant":       "rgba(255,255,255,0.55)",
+        "background":               "#000000",
+        "on-background":            "#ffffff",
+        "outline":                  "rgba(255,255,255,0.35)",
+        "outline-variant":          "rgba(255,255,255,0.10)",
+        "error":                    "#ffb4ab",
+        "error-container":          "#93000a",
+        "on-error":                 "#690005",
+        "on-error-container":       "#ffdad6",
+      },
+      fontFamily: {
+        "display":  ["'Epilogue'", "Georgia", "serif"],
+        "headline": ["'Mulish'", "system-ui", "sans-serif"],
+        "body":     ["'Mulish'", "system-ui", "sans-serif"],
+        "label":    ["'Mulish'", "system-ui", "sans-serif"],
+      },
+      borderRadius: {
+        DEFAULT: "6px",
+        lg:      "12px",
+        xl:      "16px",
+        "2xl":   "20px",
+      },
+    },
+  },
+}
+</script>
+<style>
+/* ── Fonts ─────────────────────────────────────────────────────── */
+/* Mulish (body) + Epilogue (display/italic) loaded via Google Fonts <link> in <head> */
+
+/* ── Design tokens ──────────────────────────────────────────────── */
+:root {
+  color-scheme: dark;
+  --bg:          #000000;
+  --fg:          #ffffff;
+  --accent:      #00e5ff;
+  --pink:        #e91e8c;
+  --gold:        #f5c200;
+  --tortoise:    #19aa0c;
+  --fg-dim:      rgba(255,255,255,0.45);
+  --fg-muted:    rgba(255,255,255,0.25);
+  --border:      rgba(255,255,255,0.10);
+  --card-bg:     rgba(255,255,255,0.04);
+  --header-h:    89px;
+  --footer-h:    80px;
+  --breadcrumb-h: 150px;
+  --bottom-h:    80px;
+  --page-px:     32px;
+}
+
+/* ── Kiosk base ──────────────────────────────────────────────────── */
+html, body {
+  width: 100%; height: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  background: #000;
+  color: #fff;
+  font-family: 'Mulish', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  cursor: default;
+}
+.kiosk-root {
+  width: 100vw; height: 100vh; height: 100dvh; /* 100vh fallback for WebView < Chrome 108 */
+  overflow: hidden; position: relative;
+  margin: 0;
+}
+
+/* ── Page visibility ─────────────────────────────────────────────── */
+.app-page { display: none; width: 100%; height: 100%; flex-direction: column; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+.app-page.active { display: flex; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #00e5ff; }
+
+/* ══════════════════════════════════════════════════════════════════
+   HEADER
+══════════════════════════════════════════════════════════════════ */
+#app-header {
+  position: absolute; top: 0; left: 0; right: 0;
+  height: var(--header-h); z-index: 50;
+  display: grid;
+  grid-template-columns: 2fr 1fr 2fr;
+  align-items: center;
+  padding: 0 var(--page-px);
+  background: #000;
+  border-bottom: 1px solid var(--border);
+}
+.header-brand {
+  font-family: 'Epilogue', serif;
+  font-style: italic; font-weight: 400;
+  font-size: 22px; line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.header-brand .brand-asa  { color: var(--tortoise); }
+.header-brand .brand-ai   { color: var(--gold); }
+.header-brand .brand-rest { color: #fff; }
+.header-home-btn {
+  display: flex; align-items: center; justify-content: center;
+  justify-self: center;
+  width: 55px; height: 55px;
+  background: none; border: none; cursor: pointer;
+  opacity: 0.75; transition: opacity 0.2s;
+}
+.header-home-btn:hover { opacity: 1; }
+.header-home-btn img { width: 55px; height: 55px; filter: none; }
+.header-nav-right {
+  display: flex; align-items: center; gap: 24px;
+  justify-content: flex-end;
+}
+.header-nav-right a,
+.header-nav-right button {
+  font-family: 'Mulish', sans-serif; font-weight: 400;
+  font-size: 21px; color: rgba(255,255,255,0.6);
+  background: none; border: none; cursor: pointer;
+  transition: color 0.2s; text-decoration: none;
+  padding: 0;
+}
+.header-nav-right a:hover,
+.header-nav-right button:hover { color: #fff; }
+.header-nav-right a.active-gallery { color: var(--accent); }
+#user-display {
+  display: flex; align-items: center; gap: 8px;
+}
+#user-name-display {
+  font-family: 'Mulish', sans-serif; font-weight: 500;
+  font-size: 21px; color: rgba(255,255,255,0.75);
+  max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   PAGES WRAPPER
+══════════════════════════════════════════════════════════════════ */
+#pages-wrapper {
+  position: absolute;
+  top: var(--header-h); bottom: var(--bottom-h);
+  left: 0; right: 0;
+  overflow: hidden;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   JOURNEY BREADCRUMB ZONE  (sits between pages and footer)
+══════════════════════════════════════════════════════════════════ */
+#journey-zone {
+  position: absolute;
+  bottom: var(--footer-h); left: 0; right: 0;
+  height: var(--breadcrumb-h); z-index: 40;
+  /* background: #000; */
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Journey breadcrumb nav */
+#journey-breadcrumb-wrapper {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; height: 100%;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   BOTTOM ZONE  (footer only)
+══════════════════════════════════════════════════════════════════ */
+#bottom-zone {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: var(--footer-h); z-index: 40;
+  background: #000;
+  border-top: 1px solid var(--border);
+}
+.journey-nav {
+  display: flex; align-items: stretch;
+  list-style: none; padding: 0; margin: 0;
+  width: 60%;
+}
+.journey-nav li {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-start;
+  padding-top: 10px;
+  position: relative;
+}
+/* Connector line between dots */
+.journey-nav li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 91px; /* padding-top(10) + icon(32) + gap(7) + half-dot(6) */
+  left: 50%; width: 100%;
+  height: 1px;
+  background: rgba(255,255,255,0.18);
+  pointer-events: none;
+}
+.step-inner {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 7px;
+  justify-content: space-between;
+  height: 135px;
+}
+/* Icons are white SVGs — opacity controls dim level, no invert needed */
+.step-icon {
+  display: flex; align-items: center; justify-content: center;
+  width: 55px; height: 55px; flex-shrink: 0;
+  opacity: 0.75;
+  transition: opacity 0.3s, filter 0.3s;
+}
+.step-icon img {
+  width: 100%; height: 100%; display: block;
+}
+.step-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.06);
+  transition: background 0.3s, border-color 0.3s;
+}
+.step-label {
+  font-family: 'Mulish', sans-serif;
+  font-weight: 400; font-size: 18px;
+  color: rgba(255,255,255,0.4);
+  text-transform: lowercase;
+  letter-spacing: 0.04em;
+  transition: color 0.3s;
+}
+/* Done steps — accent colour */
+.journey-step-done .step-icon  { opacity: 1; filter: brightness(0) saturate(100%) invert(1) sepia(1) saturate(2000%) hue-rotate(152deg); }
+.journey-step-done .step-dot   { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 5px rgba(0,229,255,0.45); }
+.journey-step-done .step-label { color: var(--accent); }
+.journey-step-done:not(:last-child)::after { background: rgba(0,229,255,0.35); }
+/* Active step */
+.journey-step-active .step-icon  { opacity: 1; filter: brightness(0) saturate(100%) invert(1) sepia(1) saturate(2000%) hue-rotate(152deg); }
+.journey-step-active .step-dot   { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 6px rgba(0,229,255,0.6); }
+.journey-step-active .step-label { color: var(--accent); font-weight: 500; }
+
+/* Footer strip */
+#app-footer {
+  height: var(--footer-h);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--page-px);
+  border-top: 1px solid var(--border);
+}
+.footer-btn {
+  font-family: 'Mulish', sans-serif; font-weight: 400;
+  font-size: 21px; color: rgba(255,255,255,0.35);
+  background: none; border: none; cursor: pointer;
+  transition: color 0.2s; letter-spacing: 0.03em;
+}
+.footer-btn:hover { color: rgba(255,255,255,0.7); }
+
+/* ══════════════════════════════════════════════════════════════════
+   PAGE TITLES & SUBTITLES
+══════════════════════════════════════════════════════════════════ */
+.page-title {
+  font-family: 'Epilogue', serif;
+  font-style: italic; font-weight: 400;
+  font-size: 46px; color: #fff;
+  line-height: 1.05; letter-spacing: -0.01em;
+  text-align: center;
+}
+.page-subtitle {
+  font-family: 'Mulish', sans-serif;
+  font-weight: 400; font-size: 16px;
+  color: rgba(255,255,255,0.5);
+  margin-top: 6px;
+  text-align: center;
+}
+.page-header {
+  padding: 120px 0 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   CONTINUE / JOURNEY BUTTONS
+══════════════════════════════════════════════════════════════════ */
+.btn-journey {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: 'Epilogue', serif;
+  font-style: italic; font-weight: 400;
+  font-size: 34px; color: #fff;
+  background: none; border: none;
+  cursor: pointer; padding: 0;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+  margin: 50px 0 300px 0;
+}
+.btn-journey:hover { opacity: 0.8; }
+.btn-journey:disabled { opacity: 0.25; cursor: not-allowed; }
+.btn-journey-line {
+  display: inline-block;
+  width: 60px; height: 1px;
+  background: #fff; flex-shrink: 0;
+}
+.btn-journey-arrow {
+  width: 100px; height: 35px;
+  /* filter: invert(1); flex-shrink: 0; */
+  /* transform: scale(.5); */
+}
+/* Confirm & Next variant (slightly larger) */
+.btn-confirm {
+  font-size: 27px;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   MODAL OVERLAYS
+══════════════════════════════════════════════════════════════════ */
+.modal-overlay {
+  position: absolute; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.82); backdrop-filter: blur(8px);
+  display: none; align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-panel {
+  background: #0c0c0c;
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 10px;
+  padding: 32px;
+  width: 600px;
+}
+.modal-input {
+  width: 100%; background: #080808 !important; background-color: #080808 !important;
+  -webkit-appearance: none; appearance: none;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 5px; padding: 10px 12px;
+  color: #fff !important; font-family: 'Mulish', sans-serif;
+  font-size: 14px; outline: none;
+  transition: border-color 0.2s;
+  color-scheme: dark;
+  box-sizing: border-box;
+}
+.modal-input:focus { border-color: var(--accent); }
+.modal-input::placeholder { color: rgba(255,255,255,0.25); }
+/* Override browser autofill white/yellow background */
+.modal-input:-webkit-autofill,
+.modal-input:-webkit-autofill:focus,
+.modal-input:-webkit-autofill:hover {
+  -webkit-box-shadow: 0 0 0 999px #080808 inset !important;
+  -webkit-text-fill-color: #fff !important;
+  caret-color: #fff;
+}
+.modal-label {
+  display: block; font-family: 'Mulish', sans-serif;
+  font-weight: 500; font-size: 10px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.modal-btn-primary {
+  width: 100%; padding: 12px;
+  background: var(--accent); color: #000;
+  font-family: 'Mulish', sans-serif;
+  font-weight: 700; font-size: 13px;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  border: none; border-radius: 5px; cursor: pointer;
+  transition: opacity 0.2s;
+}
+.modal-btn-primary:hover { opacity: 0.88; }
+.modal-btn-secondary {
+  flex: 1; padding: 11px;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #fff; background: transparent;
+  font-family: 'Mulish', sans-serif;
+  font-weight: 500; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  border-radius: 5px; cursor: pointer;
+  transition: background 0.2s;
+}
+.modal-btn-secondary:hover { background: rgba(255,255,255,0.06); }
+.modal-error {
+  font-size: 11px; color: #ffb4ab;
+  background: rgba(147,0,10,0.2);
+  padding: 7px 10px; border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+/* ── Admin modal ─────────────────────────────────────────────────── */
+#modal-admin { position: absolute; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.82); backdrop-filter: blur(8px);
+  display: none; align-items: center; justify-content: center; }
+#modal-admin.open { display: flex; }
+#modal-settings { position: absolute; inset: 0; z-index: 250;
+  background: rgba(0,0,0,0.82); backdrop-filter: blur(8px);
+  display: none; align-items: center; justify-content: center; }
+#modal-settings.open { display: flex; }
+#modal-user-login { position: absolute; inset: 0; z-index: 300;
+  background: rgba(0,0,0,0.92); backdrop-filter: blur(8px);
+  display: none; align-items: center; justify-content: center; }
+#modal-user-login.open { display: flex; }
+#modal-analysis-error { position: absolute; inset: 0; z-index: 400;
+  background: rgba(0,0,0,0.90); backdrop-filter: blur(10px);
+  display: none; align-items: center; justify-content: center; }
+#modal-analysis-error.open { display: flex; }
+
+/* ── Destination detail modal ──────────────────────────────────── */
+#modal-dest-detail {
+  position: absolute; inset: 0; z-index: 150;
+  background: rgba(0,0,0,0.80); backdrop-filter: blur(6px);
+  display: none; align-items: flex-start; justify-content: center;
+}
+#modal-dest-detail.open { display: flex; }
+.dest-modal-inner {
+  position: relative;
+  margin-top: var(--header-h);
+  width: 93%; max-height: calc(100vh - var(--header-h) - var(--bottom-h) - 20px); max-height: calc(100dvh - var(--header-h) - var(--bottom-h) - 20px); /* 100vh fallback */
+  overflow-y: auto;
+  background: #080808;
+  border: 1px solid var(--border);
+  border-top: none;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  padding: 30px 40px 40px;
+}
+.dest-modal-title {
+  font-family: 'Epilogue', serif;
+  font-style: italic; font-weight: 400;
+  font-size: 50px; color: #fff;
+  line-height: 1;
+}
+.dest-modal-subtitle {
+  font-family: 'Mulish', sans-serif; font-weight: 400;
+  font-size: 15px; color: rgba(255,255,255,0.5);
+  margin-top: 5px;
+}
+.dest-section-label {
+  font-family: 'Mulish', sans-serif; font-weight: 500;
+  font-size: 11px; color: rgba(255,255,255,0.4);
+  text-transform: uppercase; letter-spacing: 0.12em;
+  margin-bottom: 10px;
+}
+.bg-img-tile {
+  aspect-ratio: 16/9;
+  overflow: hidden; border-radius: 4px;
+  cursor: pointer; border: 2px solid transparent;
+  transition: border-color 0.2s, opacity 0.2s;
+  background: #111;
+}
+.bg-img-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bg-img-tile:hover { border-color: rgba(255,255,255,0.25); }
+.bg-img-tile.selected { border-color: var(--accent); }
+/* Style option cards in dest modal */
+.style-option {
+  padding: 16px 12px 14px;
+  text-align: center;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.style-card-name {
+  font-family: 'Epilogue', serif;
+  font-style: italic; font-weight: 400;
+  font-size: 20px; color: #fff;
+  display: block; margin-bottom: 5px;
+  line-height: 1.15;
+}
+.style-card-desc {
+  font-family: 'Mulish', sans-serif; font-weight: 400;
+  font-size: 11px; color: rgba(255,255,255,0.45);
+  line-height: 1.5;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   HOME PAGE
+══════════════════════════════════════════════════════════════════ */
+#bg-canvas-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+#bg-canvas-container canvas {
+  width: 100% !important; height: 100% !important;
+  display: block;
+}
+.home-title-block {
+  position: absolute;
+  top: 42%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+  z-index: 2;
+  width: 85%;
+  max-width: 900px;
+}
+.home-title-block .btn-journey {
+  pointer-events: auto;
+  margin-top: 40px;
+}
+.home-asa-ai {
+  font-family: 'Epilogue', serif;
+  font-style: italic; font-weight: 400;
+  font-size: 68px; line-height: 1;
+  margin-bottom: 4px;
+}
+.t-asa { color: var(--pink); }
+.t-ai  { color: var(--gold); }
+.home-dream {
+  font-family: 'Epilogue', serif;
+  font-style: italic; font-weight: 400;
+  font-size: 68px; color: #fff;
+  line-height: 1; letter-spacing: -0.02em;
+}
+.home-tagline {
+  font-family: 'Mulish', sans-serif; font-weight: 300;
+  font-size: 18px; color: rgba(255,255,255,0.55);
+  line-height: 1.6; margin-top: 18px;
+  max-width: 450px; margin-left: auto; margin-right: auto;
+}
+/* State display inside home page — closer to blob */
+#home-step-row {
+  position: absolute;
+  top: 63%; left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 3;
+}
+/* Stats panel — inside page-home, shown below step row */
+#home-stats-panel {
+  position: absolute;
+  top: 80%; left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center; justify-content: center;
+  gap: 90px;
+  z-index: 3;
+  pointer-events: none;
+}
+.stat-item {
+  display: flex; align-items: center; gap: 12px;
+  flex-direction: row;
+}
+.stat-item img { width: 40px; height: 40px; opacity: 0.18; }
+.stat-num {
+  font-family: 'Mulish', sans-serif;
+  font-weight: 300; font-size: 55px; color: #A6A8AB;
+  line-height: 1;
+  font-style: italic;
+}
+.stat-label {
+  font-family: 'Mulish', sans-serif;
+  font-weight: 400; font-size: 18px;
+  color: rgba(255,255,255,0.4);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   CAPTURE PAGE
+══════════════════════════════════════════════════════════════════ */
+#camera-video   { width: 100%; height: 100%; object-fit: cover; }
+#capture-preview{ width: 100%; height: 100%; object-fit: cover; display: none; }
+.hud-corner-tl, .hud-corner-tr, .hud-corner-bl, .hud-corner-br {
+  position: absolute; width: 26px; height: 26px;
+  border-color: rgba(0,229,255,0.6); border-style: solid;
+}
+.hud-corner-tl { top: 10px; left: 10px; border-width: 2px 0 0 2px; }
+.hud-corner-tr { top: 10px; right: 10px; border-width: 2px 2px 0 0; }
+.hud-corner-bl { bottom: 10px; left: 10px; border-width: 0 0 2px 2px; }
+.hud-corner-br { bottom: 10px; right: 10px; border-width: 0 2px 2px 0; }
+/* Art style thumbnail */
+.art-style-btn {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 7px;
+  cursor: pointer; background: none; border: none;
+  opacity: 0.35;
+  transition: opacity 0.2s;
+  padding: 0;
+}
+.art-style-btn:hover { opacity: 0.65; }
+.art-style-btn.selected { opacity: 1; }
+.style-thumb-circle {
+  width: 65px; height: 65px; border-radius: 50%;
+  overflow: hidden; border: 2px solid transparent;
+  transition: border-color 0.2s;
+  background: #111;
+}
+.style-thumb-circle img { width: 100%; height: 100%; object-fit: cover; }
+.style-thumb-label {
+  font-family: 'Mulish', sans-serif; font-weight: 400;
+  font-size: 11px; color: rgba(255,255,255,0.7);
+  text-transform: lowercase;
+}
+/* Camera side label */
+.cam-side-label {
+  font-family: 'Mulish', sans-serif; font-weight: 400;
+  font-size: 10px; color: rgba(255,255,255,0.35);
+  text-align: center; line-height: 1.4;
+}
+/* Retake button */
+.btn-retake {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  background: none; border: none; cursor: pointer;
+  color: rgba(255,255,255,0.5);
+  font-family: 'Mulish', sans-serif; font-size: 11px;
+  transition: color 0.2s;
+}
+.btn-retake:hover { color: #fff; }
+.btn-retake img { width: 22px; height: 22px; }
+/* Status chip */
+.cam-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+  padding: 5px 10px; border-left: 2px solid var(--accent);
+  font-family: 'Mulish', sans-serif; font-weight: 500;
+  font-size: 11px; color: var(--accent);
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+.cam-chip-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--accent); animation: pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+/* Photo captured status */
+.capture-status {
+  font-family: 'Mulish', serif;
+  font-style: italic; font-size: 26px; color: #fff;
+  text-align: center;
+}
+/* Capture page — dynamic "what to do next" hint under the camera frame */
+#cam-person-hint.hint-action { color: var(--accent); }
+#cam-person-hint.hint-pop    { animation: fadeIn 0.35s ease; }
+/* Draw the eye to Continue once a photo is captured — matters most on
+   multi-person groups, where it's otherwise unclear capture repeats. */
+#btn-continue-capture.btn-ready:not(:disabled) {
+  animation: continue-glow 1.6s ease-in-out infinite;
+}
+@keyframes continue-glow {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(0,229,255,0)); }
+  50%      { filter: drop-shadow(0 0 10px rgba(0,229,255,0.6)); }
+}
+/* Progress bar */
+.progress-bar-fill {
+  transition: width 0.5s ease;
+  background: linear-gradient(90deg, #006875, #00e5ff);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   DESTINATION PAGE
+══════════════════════════════════════════════════════════════════ */
+#destination-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  flex: 1; min-height: 0;
+  overflow-y: auto;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   QUOTE PAGE
+══════════════════════════════════════════════════════════════════ */
+#quote-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(4, 1fr);
+  gap: 20px;
+  flex: 1; min-height: 0; overflow: hidden;
+}
+.quote-card {
+  position: relative;
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 24px 28px 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0, 0, 0, 0.75);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  min-height: 150px;
+  border: rgba(255, 255, 255, .25) solid 1px;
+}
+.quote-card:hover {
+  border-color: rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.06);
+}
+.quote-card.selected {
+  border-color: var(--accent);
+  background: rgba(0,229,255,0.06);
+  box-shadow: 0 0 20px rgba(0,229,255,0.15);
+}
+.quote-card-mark {
+  font-family: 'Epilogue', serif;
+  font-size: 52px; line-height: 1;
+  color: rgba(0,229,255,0.20);
+  display: block; margin-bottom: 8px;
+  user-select: none;
+}
+.quote-card-text {
+  font-family: 'Epilogue', serif;
+  font-style: italic; font-weight: 400;
+  font-size: 43px; color: #fff;
+  line-height: 1.5; flex: 1;
+}
+.quote-card.selected .quote-card-text { color: #fff; }
+.quote-card-check {
+  margin-top: 14px;
+  width: 24px; height: 24px;
+  background: var(--accent); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.2s;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   TRANSFORM PAGE
+══════════════════════════════════════════════════════════════════ */
+.transform-panel {
+  position: relative; overflow: hidden;
+  border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);
+  background: #080808; flex: 1;
+  display: block;
+}
+.transform-label-chip {
+  position: absolute; top: 10px; left: 10px;
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
+  padding: 4px 10px; border-radius: 2px;
+  font-family: 'Mulish', sans-serif; font-weight: 700;
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  z-index: 2;
+}
+.transform-label-chip.source { color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.15); }
+.transform-label-chip.ai     { color: var(--accent); border: 1px solid rgba(0,229,255,0.3); background: rgba(0,0,0,0.85); }
+.chip-dot { width: 4px; height: 4px; border-radius: 50%; background: currentColor; }
+
+/* ══════════════════════════════════════════════════════════════════
+   RESULT PAGE
+══════════════════════════════════════════════════════════════════ */
+.result-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 11px; border-radius: 2px;
+  font-family: 'Mulish', sans-serif; font-weight: 700;
+  font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.result-badge.dest { background: rgba(0,0,0,0.75); border: 1px solid rgba(255,255,255,0.2); color: #fff; }
+.result-badge.ai   { background: var(--accent); color: #000; }
+.result-badge .chip-dot { width: 4px; height: 4px; border-radius: 50%; background: currentColor; }
+
+/* ══════════════════════════════════════════════════════════════════
+   GALLERY PAGE
+══════════════════════════════════════════════════════════════════ */
+.gallery-card {
+  position: relative; overflow: hidden; border-radius: 10px;
+  background: #0a0a0a; aspect-ratio: 1;
+  cursor: pointer; transition: transform 0.2s;
+}
+.gallery-card:hover { transform: scale(1.02); }
+.gallery-card img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ══════════════════════════════════════════════════════════════════
+   PRINT OVERLAY
+══════════════════════════════════════════════════════════════════ */
+#print-overlay { display: none; }
+@media print {
+  .kiosk-root > *:not(#print-overlay) { display: none !important; }
+  #print-overlay {
+    display: flex !important; position: fixed; inset: 0;
+    background: white; align-items: center; justify-content: center;
+  }
+  #print-overlay img { max-width: 100%; max-height: 100%; object-fit: contain; }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   SETTINGS GALLERY BTNS
+══════════════════════════════════════════════════════════════════ */
+.settings-gallery-btn { background: transparent; }
+.settings-gallery-btn.selected-on  { border-color: var(--accent) !important; background: rgba(0,229,255,0.08) !important; }
+.settings-gallery-btn.selected-off { border-color: rgba(255,100,100,0.5) !important; background: rgba(147,0,10,0.1) !important; }
+
+/* ══════════════════════════════════════════════════════════════════
+   iPAD PRO 11" PORTRAIT  (≤ 900 px wide, portrait orientation)
+   These overrides do NOT affect the kiosk (landscape / wider display).
+══════════════════════════════════════════════════════════════════ */
+@media screen and (max-width: 900px) and (orientation: portrait) {
+
+  /* ── Layout tokens ──────────────────────────────────────────── */
+  :root {
+    --header-h:      64px;
+    --footer-h:      56px;
+    --breadcrumb-h: 110px;
+    --bottom-h:     166px;   /* breadcrumb-h + footer-h */
+    --page-px:       20px;
+  }
+
+  /* ── Journey zone: anchor right above footer ─────────────────── */
+  #journey-zone { bottom: var(--footer-h); }
+
+  /* ── Header ─────────────────────────────────────────────────── */
+  .header-brand                            { font-size: 16px; }
+  .header-home-btn                         { width: 40px; height: 40px; }
+  .header-home-btn img                     { width: 40px; height: 40px; }
+  .header-nav-right a,
+  .header-nav-right button                 { font-size: 16px; }
+  #user-name-display                       { font-size: 16px; max-width: 110px; }
+
+  /* ── Journey breadcrumb ──────────────────────────────────────── */
+  .step-inner                              { height: 95px; gap: 5px; }
+  .step-icon                               { width: 38px; height: 38px; }
+  .step-label                              { font-size: 13px; }
+  .journey-nav li:not(:last-child)::after  { top: 68px; }
+
+  /* ── Footer ─────────────────────────────────────────────────── */
+  .footer-btn                              { font-size: 16px; }
+
+  /* ── Page titles ─────────────────────────────────────────────── */
+  .page-title                              { font-size: 32px; }
+  .page-subtitle                           { font-size: 13px; }
+  .page-header                             { padding: 50px 0 12px; }
+
+  /* ── Continue / Journey buttons ──────────────────────────────── */
+  .btn-journey                             { font-size: 26px; margin: 20px 0 0; }
+
+  /* ── Modals ──────────────────────────────────────────────────── */
+  .modal-panel                             { width: min(540px, 92vw); }
+  /* Gallery detail modal has inline width:900px — must use !important */
+  #modal-gallery-detail > div              { width: min(900px, 96vw) !important; }
+
+  /* ── Home page ───────────────────────────────────────────────── */
+  .home-asa-ai, .home-dream                { font-size: 48px; }
+  .home-tagline                            { font-size: 15px; }
+  .stat-num                                { font-size: 40px; }
+  .stat-label                              { font-size: 15px; }
+  #home-stats-panel                        { gap: 50px; }
+
+  /* ── Capture page: scale camera to fit portrait width ───────── */
+  /* Overrides inline max-height:600px and align-items:center */
+  #capture-layout {
+    max-height: none !important;
+    align-items: stretch !important;
+  }
+  /* Overrides inline width/height so sidebars stretch with the camera */
+  .capture-sidebar-left                    { width: 64px !important; height: auto !important; }
+  .capture-sidebar-right                   { width: 72px !important; height: auto !important; }
+  /* Camera frame: override inline 720×720px to be flex-responsive */
+  #camera-frame {
+    width: auto !important;
+    height: auto !important;
+    flex-grow: 1 !important;
+    flex-shrink: 1 !important;
+    flex-basis: 0 !important;
+    min-width: 0 !important;
+    aspect-ratio: 1 / 1;
+  }
+}
+
+/* Responsive adjustments for compact screens & laptop heights */
+@media screen and (max-height: 850px) {
+  :root {
+    --header-h: 60px;
+    --footer-h: 52px;
+    --breadcrumb-h: 90px;
+    --page-px: 20px;
+  }
+  .page-header { padding: 10px 0 6px !important; }
+  .page-title { font-size: 26px !important; }
+  .page-subtitle { font-size: 13px !important; }
+  .btn-journey { font-size: 20px !important; margin: 10px 0 0 !important; }
+  .home-title-block img { max-height: 65px !important; }
+  .home-dream { font-size: 38px !important; }
+  .home-tagline { font-size: 14px !important; }
+}
+</style>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<div class="kiosk-root">
+
+<!-- DOT FIELD BACKGROUND -->
+<div id="dot-field-bg" style="position:absolute;top:var(--header-h);bottom:var(--footer-h);left:0;right:0;z-index:0;pointer-events:none;overflow:hidden">
+  <canvas id="dot-field-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+  <svg id="dot-field-svg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="dot-glow-grad" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.14"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <circle id="dot-glow-circle" cx="-9999" cy="-9999" r="170" fill="url(#dot-glow-grad)" style="opacity:0;will-change:opacity"/>
+  </svg>
+</div>
+
+<!-- PRINT OVERLAY -->
+<div id="print-overlay">
+  <img id="print-image" src="" alt="print"/>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     USER LOGIN MODAL
+══════════════════════════════════════════════════════════════ -->
+<div id="modal-user-login">
+  <div class="modal-panel" style="text-align:center">
+    <div style="margin-bottom:20px">
+      <h2 style="font-family:'Epilogue',serif;font-style:italic;font-size:32px;color:#fff;margin-bottom:6px;line-height:1">Welcome</h2>
+      <p style="font-family:'Mulish',sans-serif;font-size:12px;color:rgba(255,255,255,0.45)">Immersive AI Cosplayers MultiVerse</p>
+    </div>
+    <div id="user-login-error" class="modal-error hidden"></div>
+    <div style="text-align:left;display:flex;flex-direction:column;gap:12px;margin-bottom:16px">
+      <div>
+        <label class="modal-label">Your Name</label>
+        <input id="user-name-input" class="modal-input" type="text" placeholder="Enter your name to begin…" maxlength="40"/>
+      </div>
+      <div>
+        <label class="modal-label">Password</label>
+        <input id="user-password-input" class="modal-input" type="password" placeholder="Enter password…" maxlength="80"/>
+      </div>
+      <div>
+        <label class="modal-label">Replicate API Key <span style="font-weight:300;text-transform:none;letter-spacing:0">(optional)</span></label>
+        <p style="font-family:'Mulish',sans-serif;font-size:9px;color:rgba(255,255,255,0.3);margin-bottom:5px">Leave blank to use the server token.</p>
+        <div style="display:flex;gap:6px">
+          <input id="user-replicate-key-input" class="modal-input" type="password" placeholder="r8_…" maxlength="200" style="flex:1;font-family:monospace"/>
+          <button type="button" onclick="document.getElementById('user-replicate-key-input').type = document.getElementById('user-replicate-key-input').type === 'password' ? 'text' : 'password'"
+            style="padding:0 11px;background:#0d0d0d;border:1px solid rgba(255,255,255,0.12);border-radius:5px;color:rgba(255,255,255,0.5);cursor:pointer;font-size:11px">👁</button>
+        </div>
+      </div>
+    </div>
+    <button onclick="saveUserLogin()" class="modal-btn-primary">Start Journey →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     ADMIN SETTINGS MODAL
+══════════════════════════════════════════════════════════════ -->
+<div id="modal-settings">
+  <div class="modal-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <div>
+        <h2 style="font-family:'Mulish',sans-serif;font-weight:700;font-size:18px;color:#fff">Admin Settings</h2>
+        <p style="font-family:'Mulish',sans-serif;font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px;letter-spacing:0.1em;text-transform:uppercase">Kiosk Configuration</p>
+      </div>
+      <button onclick="closeSettingsModal()" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);font-size:18px;line-height:1;padding:4px">✕</button>
+    </div>
+    <div id="settings-msg" class="modal-error hidden"></div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <!-- Replicate API Key -->
+      <div>
+        <label class="modal-label">Replicate API Key</label>
+        <p style="font-family:'Mulish',sans-serif;font-size:9px;color:rgba(255,255,255,0.3);margin-bottom:5px">Required for AI transformations.</p>
+        <div style="display:flex;gap:6px">
+          <input id="settings-replicate-key" class="modal-input" type="password" placeholder="r8_…" style="flex:1;font-family:monospace"/>
+          <button onclick="toggleReplicateKeyVisibility()"
+            style="padding:0 11px;background:#0d0d0d;border:1px solid rgba(255,255,255,0.12);border-radius:5px;color:rgba(255,255,255,0.5);cursor:pointer;font-size:11px">👁</button>
+        </div>
+        <p id="settings-replicate-status" style="font-family:'Mulish',sans-serif;font-size:9px;color:rgba(255,255,255,0.35);margin-top:3px"></p>
+      </div>
+      <!-- Gallery Toggle -->
+      <div>
+        <label class="modal-label">Gallery Access</label>
+        <p style="font-family:'Mulish',sans-serif;font-size:9px;color:rgba(255,255,255,0.3);margin-bottom:6px">Allow regular users to view the gallery.</p>
+        <div style="display:flex;gap:6px">
+          <button id="settings-gallery-on" onclick="setGalleryPublic(true)"
+            class="settings-gallery-btn modal-btn-secondary" style="flex:1;display:flex;align-items:center;justify-content:center;gap:5px">
+            🌐 <span>Public</span>
+          </button>
+          <button id="settings-gallery-off" onclick="setGalleryPublic(false)"
+            class="settings-gallery-btn modal-btn-secondary" style="flex:1;display:flex;align-items:center;justify-content:center;gap:5px">
+            🔒 <span>Admin Only</span>
+          </button>
+        </div>
+      </div>
+      <!-- Camera Orientation -->
+      <div>
+        <label class="modal-label">Camera Orientation</label>
+        <p style="font-family:'Mulish',sans-serif;font-size:9px;color:rgba(255,255,255,0.3);margin-bottom:6px">Portrait 9:16 (default, built-in kiosk camera). Landscape 16:9 (external webcam). Applies on next camera start.</p>
+        <div style="display:flex;gap:6px">
+          <button id="cam-orient-portrait"  onclick="setCameraOrient('portrait')"  class="cam-orient-btn modal-btn-secondary" style="flex:1;font-size:10px">&#128241; Portrait 9:16</button>
+          <button id="cam-orient-landscape" onclick="setCameraOrient('landscape')" class="cam-orient-btn modal-btn-secondary" style="flex:1;font-size:10px">&#128421; Landscape 16:9</button>
+        </div>
+      </div>
+      <!-- Camera Rotation -->
+      <div>
+        <label class="modal-label">Camera Rotation</label>
+        <p style="font-family:'Mulish',sans-serif;font-size:9px;color:rgba(255,255,255,0.3);margin-bottom:6px">Auto: rotate when stream is portrait (old USB-webcam kiosk). Off: no rotation (new built-in portrait camera). Force CCW: always rotate.</p>
+        <div style="display:flex;gap:6px">
+          <button id="cam-rot-auto"  onclick="setCameraRotationMode('auto')"      class="cam-rot-btn modal-btn-secondary" style="flex:1;font-size:10px">Auto</button>
+          <button id="cam-rot-off"   onclick="setCameraRotationMode('force_off')" class="cam-rot-btn modal-btn-secondary" style="flex:1;font-size:10px">Off</button>
+          <button id="cam-rot-ccw"   onclick="setCameraRotationMode('force_ccw')" class="cam-rot-btn modal-btn-secondary" style="flex:1;font-size:10px">Force CCW</button>
+        </div>
+      </div>
+      <!-- Download Log -->
+      <div>
+        <label class="modal-label">Retrieval Log</label>
+        <div style="display:flex;gap:6px;margin-top:4px">
+          <button onclick="downloadRetrievalLog()" class="modal-btn-secondary" style="flex:1">
+            ↓ Download CSV
+          </button>
+          <button onclick="resetRetrievalLog()" class="modal-btn-secondary" style="flex:1;color:#ffb4ab;border-color:rgba(255,100,100,0.35)">
+            ✕ Reset Log
+          </button>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:20px">
+      <button onclick="closeSettingsModal()" class="modal-btn-secondary">Cancel</button>
+      <button onclick="saveAdminSettings()" class="modal-btn-primary" style="flex:1">Save Settings</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     ADMIN LOGIN MODAL
+══════════════════════════════════════════════════════════════ -->
+<div id="modal-admin">
+  <div class="modal-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <div>
+        <h2 style="font-family:'Mulish',sans-serif;font-weight:700;font-size:18px;color:#fff">Admin Portal</h2>
+        <p style="font-family:'Mulish',sans-serif;font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px;letter-spacing:0.1em;text-transform:uppercase">Secure Access</p>
+      </div>
+      <button onclick="closeAdminModal()" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);font-size:18px;line-height:1;padding:4px">✕</button>
+    </div>
+    <!-- Login form -->
+    <div id="admin-login-panel">
+      <div id="admin-error" class="modal-error hidden"></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div>
+          <label class="modal-label">Username</label>
+          <input id="admin-username" class="modal-input" type="text" placeholder="admin"/>
+        </div>
+        <div>
+          <label class="modal-label">Password</label>
+          <input id="admin-password" class="modal-input" type="password" placeholder="••••••••"/>
+        </div>
+        <button onclick="doAdminLogin()" class="modal-btn-primary" style="margin-top:4px">Login</button>
+      </div>
+    </div>
+    <!-- Logged-in panel -->
+    <div id="admin-loggedin-panel" class="hidden">
+      <div style="display:flex;align-items:center;gap:10px;padding:12px;background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.2);border-radius:6px;margin-bottom:14px">
+        <span style="font-size:22px">🔑</span>
+        <div>
+          <p style="font-family:'Mulish',sans-serif;font-weight:700;font-size:12px;color:#fff">Signed in as Admin</p>
+          <p style="font-family:'Mulish',sans-serif;font-size:9px;color:var(--accent);margin-top:1px">Full access enabled</p>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <button onclick="closeAdminModal(); openSettingsModal()" class="modal-btn-secondary" style="width:100%">⚙ Admin Settings</button>
+        <button onclick="doAdminLogout()" class="modal-btn-secondary" style="width:100%;color:#ffb4ab;border-color:rgba(147,0,10,0.5)">⬡ Sign Out</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     ANALYSIS ERROR MODAL
+══════════════════════════════════════════════════════════════ -->
+<div id="modal-analysis-error">
+  <div class="modal-panel" style="text-align:center">
+    <div id="analysis-error-icon" style="font-size:36px;margin-bottom:12px">⚠️</div>
+    <h2 id="analysis-error-title" style="font-family:'Epilogue',serif;font-style:italic;font-size:30px;color:#fff;margin-bottom:8px"></h2>
+    <p id="analysis-error-body" style="font-family:'Mulish',sans-serif;font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:20px;line-height:1.6"></p>
+    <div id="analysis-error-actions" style="display:flex;gap:8px;justify-content:center"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     GALLERY DETAIL MODAL
+══════════════════════════════════════════════════════════════════ -->
+<div id="modal-gallery-detail" style="position:absolute;inset:0;z-index:350;background:rgba(0,0,0,0.92);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center">
+  <div style="position:relative;width:900px;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.10);background:#0a0a0a;display:flex;flex-direction:column">
+    <!-- Image -->
+    <div style="position:relative;width:100%;aspect-ratio:3/2;background:#080808">
+      <img id="gallery-detail-img" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:block"/>
+      <!-- Overlay gradient -->
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 50%)"></div>
+      <!-- Close button -->
+      <button onclick="closeGalleryDetail()" style="position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.15);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">&#x2715;</button>
+      <!-- Badges -->
+      <div style="position:absolute;top:14px;left:14px;display:flex;gap:6px">
+        <div class="result-badge dest"><span class="chip-dot" style="background:rgba(255,255,255,0.6)"></span><span id="gallery-detail-dest"></span></div>
+        <div class="result-badge ai"><span class="chip-dot"></span><span id="gallery-detail-style"></span></div>
+      </div>
+    </div>
+    <!-- Info + actions strip -->
+    <div style="padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div>
+        <p id="gallery-detail-date" style="font-family:'Mulish',sans-serif;font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0.08em;text-transform:uppercase"></p>
+        <p id="gallery-detail-token" style="font-family:'Mulish',sans-serif;font-size:11px;color:rgba(255,255,255,0.25);margin-top:3px"></p>
+      </div>
+      <div id="gallery-detail-actions" style="display:flex;gap:8px"></div>
+    </div>
+    <!-- QR panel (toggled via the QR Code action, admin only) -->
+    <div id="gallery-detail-qr-panel" class="hidden" style="padding:0 20px 20px;display:flex;flex-direction:column;align-items:center;gap:8px;border-top:1px solid rgba(255,255,255,0.08)">
+      <p style="font-family:'Mulish',sans-serif;font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:0.08em;text-transform:uppercase;margin-top:16px">Scan to retrieve on your phone</p>
+      <div id="gallery-detail-qr-display" style="background:#fff;padding:6px;border-radius:4px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════════════════════════ -->
+<header id="app-header">
+  <!-- Brand -->
+  <div class="header-brand">
+    <!-- <img src="/imgs/kiosk-logo.png" alt="Kiosk Logo" style="max-width: 150px;height:auto;pointer-events:none;margin-right: 15px;margin-left: -30px;margin-top: 0;display: inline-block;"/> -->
+    <span class="brand-asa">Immersive AI</span> 
+    <span class="brand-ai"> Cosplayers</span> <span class="brand-rest">MultiVerse</span>
+  </div>
+  <!-- Home icon (centre) -->
+  <button class="header-home-btn" onclick="navigateTo('home')" title="Home">
+    <img src="/icons/home.svg" alt="Home"/>
+  </button>
+  <!-- Right nav -->
+  <div class="header-nav-right">
+    <a id="nav-gallery-link" onclick="navigateTo('gallery')" style="display:none;cursor:pointer">Gallery</a>
+    <div id="user-display" class="hidden" style="display:flex;align-items:center;gap:16px">
+      <span id="user-name-display"></span>
+      <button onclick="clearUserLogin()" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.35);font-size:24px">✕</button>
+    </div>
+    <button id="btn-admin-settings" onclick="openSettingsModal()" class="hidden" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);font-size:26px;transition:color 0.2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">⚙</button>
+    <button onclick="openAdminModal()" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:12px">
+      <span style="font-size:40px;color:rgba(255,255,255,0.5)" id="profile-icon"><img src="icons/settings.svg" style="width:32px;height:32px;opacity:0.5;vertical-align:middle" alt="admin"/></span>
+      <span id="admin-badge" class="hidden" style="font-family:'Mulish',sans-serif;font-weight:700;font-size:20px;color:var(--accent);letter-spacing:0.15em;text-transform:uppercase">ADMIN</span>
+    </button>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGES WRAPPER
+══════════════════════════════════════════════════════════════ -->
+<div id="pages-wrapper">
+  <!-- <div style="text-align:center;padding:24px 0 0;position: absolute;left: 50%;bottom: 0;transform: translate(-300px);z-index:10;display: flex;justify-content: center;align-items: center;width: 600px;">
+      <img src="/imgs/kiosk-logo.png" alt="Kiosk Logo" style="max-width:160px;height:auto;pointer-events:none"/>
+      <p style="font-family: 'Mulish',serif;font-size: 26px;font-weight: 200;font-style:italic;/* color: white; */color: rgba(255,255,255,0.65);margin-left:12px;pointer-events:none">Joy to Travel Smart Lifestyle!</p>
+  </div> -->
+  <!-- ─────────────────────────────────────────────
+       PAGE: HOME
+  ───────────────────────────────────────────── -->
+  <div id="page-home" class="app-page" style="position:relative;overflow:hidden">
+    <!-- Kiosk logo — above the orb, centered -->
+    <!-- Orb (fills full content area) -->
+    <div id="bg-canvas-container"></div>
+    <!-- Title + tagline + Start Journey, centered over orb -->
+    <div class="home-title-block">
+      <div style="width:100%;display:flex;justify-content:center;margin-bottom: 15px;">
+        <img src="/imgs/kiosk-logo.png" alt="Kiosk Logo" style="max-width:200px;height:auto;pointer-events:none; display: none;"/>
+      </div>
+      <!-- <p class="home-asa-ai"><span class="t-asa">ASA</span> <span class="t-ai">AI</span></p> -->
+      <div style="width:100%;display:flex;align-items:center;justify-content:center;margin-bottom:15px;gap:20px">
+        <div style="width:50%;display:flex;justify-content:center">
+          <img src="/imgs/logos/rvi-logo.png" alt="RVI Logo" style="max-height:90px;max-width:320px;width:auto;height:auto;object-fit:contain;pointer-events:none"/>
+        </div>
+        <div style="width:50%;display:flex;justify-content:center">
+          <img src="/imgs/logos/venusta-logo.png?v=2" alt="Venusta Logo" style="max-height:90px;max-width:340px;width:auto;height:auto;object-fit:contain;pointer-events:none"/>
+        </div>
+      </div>
+      <p class="home-dream"><span class="t-ai">Theme</span>Painter</p>
+      <p class="home-tagline">Come as you may. You are free to imagine.</p>
+      <button class="btn-journey" onclick="startNewJourney()" style="pointer-events:auto">
+        Begin Transformation
+        <img class="btn-journey-arrow" src="/icons/continue.svg" alt="→" style="filter:none;width:90px;height:auto"/>
+      </button>
+    </div>
+    <!-- State display (all locked, static — sits closer to the blob) -->
+    <ol id="home-step-row" class="journey-nav">
+      <li class="journey-step-locked"><span class="step-inner"><span class="step-icon"><img src="/icons/destination.svg" alt="setup"/></span><span class="step-dot"></span><span class="step-label">setup</span></span></li>
+      <li class="journey-step-locked"><span class="step-inner"><span class="step-icon"><img src="/icons/capture.svg" alt="capture"/></span><span class="step-dot"></span><span class="step-label">capture</span></span></li>
+      <li class="journey-step-locked"><span class="step-inner"><span class="step-icon"><img src="/icons/styles.svg" alt="lineup"/></span><span class="step-dot"></span><span class="step-label">lineup</span></span></li>
+      <li class="journey-step-locked"><span class="step-inner"><span class="step-icon"><img src="/icons/countries.svg" alt="background"/></span><span class="step-dot"></span><span class="step-label">background</span></span></li>
+      <li class="journey-step-locked"><span class="step-inner"><span class="step-icon"><img src="/icons/transform.svg" alt="transform"/></span><span class="step-dot"></span><span class="step-label">transform</span></span></li>
+      <li class="journey-step-locked"><span class="step-inner"><span class="step-icon"><img src="/icons/result.svg" alt="result"/></span><span class="step-dot"></span><span class="step-label">result</span></span></li>
+    </ol>
+    <!-- Stats panel — lives here in page-home, always visible on home -->
+    <div id="home-stats-panel">
+      <div class="stat-item">
+        <img src="/icons/countries.svg" alt="countries"/>
+        <div>
+          <div class="stat-num" id="stat-destinations">0</div>
+          <div class="stat-label">Themes</div>
+        </div>
+      </div>
+      <div class="stat-item">
+        <img src="/icons/styles.svg" alt="styles"/>
+        <div>
+          <div class="stat-num" id="stat-styles">0</div>
+          <div class="stat-label">Characters</div>
+        </div>
+      </div>
+      <div class="stat-item">
+        <img src="/icons/created.svg" alt="created"/>
+        <div>
+          <div class="stat-num" id="stat-transformations">0</div>
+          <div class="stat-label">Created</div>
+        </div>
+      </div>
+    </div>
+    <!-- Hidden gallery btn (kept for JS compat) -->
+    <button id="home-gallery-btn" onclick="navigateTo('gallery')" style="display:none"></button>
+  </div>
+
+  <!-- ─────────────────────────────────────────────
+       PAGE: CAPTURE
+  ───────────────────────────────────────────── -->
+  <div id="page-capture" class="app-page" style="padding:30px var(--page-px) 20px;gap:16px">
+    <!-- Title -->
+    <div class="page-header">
+      <h1 class="page-title">Capture &amp; Define</h1>
+      <p class="page-subtitle" id="capture-page-subtitle">Position yourself in frame. Pose!</p>
+    </div>
+    <!-- Per-person progress row (filled in by JS for group captures) -->
+    <div id="capture-progress-row" style="display:flex;gap:8px;justify-content:center"></div>
+    <!-- Main content: left col | camera frame -->
+    <div id="capture-layout" style="display:flex;gap:20px;flex:1;min-height:0; max-height: 750px;justify-content:center;align-items:center">
+
+      <!-- Left: camera selector (top) + retake (bottom) -->
+      <div class="capture-sidebar-left" style="width:80px;height:720px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:4px 0">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center">
+          <span class="step-icon" style="width:28px;height:28px;opacity:0.45"><img src="/icons/camera.svg" alt="camera"/></span>
+          <select id="camera-select" onchange="switchCamera(this.value)"
+            style="background:#080808;border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.6);font-family:'Mulish',sans-serif;font-size:10px;padding:4px 5px;border-radius:4px;width:78px;outline:none;text-align:center">
+          </select>
+        </div>
+        <button id="btn-retake" onclick="retakePhoto()" style="display:none" class="btn-retake">
+          <span class="step-icon" style="width:28px;height:28px;opacity:0.45"><img src="/icons/refresh-cw.svg" alt="retake"/></span>
+          Retake
+        </button>
+      </div>
+
+      <!-- Camera frame — 720×720px square -->
+      <div id="camera-frame" style="width:720px;height:720px;flex-shrink:0;position:relative;border-radius:8px;overflow:hidden;background:#080808;border:1px solid rgba(255,255,255,0.08)">
+        <video id="camera-video" autoplay playsinline muted></video>
+        <canvas id="capture-canvas" style="display:none"></canvas>
+        <img id="capture-preview" alt="captured"/>
+        <!-- Camera init placeholder -->
+        <div id="camera-placeholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:rgba(255,255,255,0.3)">
+          <span class="step-icon" style="width:38px;height:38px;opacity:0.3"><img src="/icons/camera.svg" alt=""/></span>
+          <p style="font-family:'Mulish',sans-serif;font-size:12px;letter-spacing:0.1em;text-transform:uppercase">Camera initialising…</p>
+        </div>
+        <!-- HUD corners -->
+        <div class="hud-corner-tl"></div><div class="hud-corner-tr"></div>
+        <div class="hud-corner-bl"></div><div class="hud-corner-br"></div>
+        <!-- Live status chip -->
+        <div id="cam-status-live" class="cam-chip" style="position:absolute;top:10px;left:50%;transform:translateX(-50%)">
+          <div class="cam-chip-dot"></div>LIVE
+        </div>
+        <!-- Capture button (bottom-center, hidden after capture) -->
+        <div id="capture-btn-group" style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:10px;align-items:center;white-space:nowrap">
+          <button id="btn-capture" onclick="capturePhoto()"
+            style="display:flex;align-items:center;gap:7px;background:var(--accent);color:#000;border:none;border-radius:6px;padding:10px 22px;font-family:'Mulish',sans-serif;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:0.1em;cursor:pointer;transition:opacity 0.2s">
+            <span class="step-icon" style="width:16px;height:16px;filter:brightness(0)"><img src="/icons/capture.svg" alt="capture"/></span>
+            Capture
+          </button>
+          <label style="display:none">
+            <input type="file" accept="image/*" onchange="loadImageFromFile(event)" style="display:none"/>
+          </label>
+        </div>
+        <!-- Error overlay -->
+        <div id="capture-error" class="hidden" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.8)">
+          <p style="font-family:'Mulish',sans-serif;font-size:14px;color:#ffb4ab;text-align:center;padding:20px"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Below camera: hint + status + Continue -->
+    <div style="/*display:flex;align-items:center;justify-content:space-between;gap:16px*/">
+      <div id="cam-person-hint" style="font-family:'Mulish',sans-serif;font-size:18px;font-weight:500;color:rgba(255,255,255,0.7);letter-spacing:0.03em; text-align: center;">
+        Position yourself in frame
+      </div>
+      <div style="height: 110px; text-align: center;">
+        <div id="post-capture-bar" class="hidden">
+          <p class="capture-status" id="capture-status-text">Photo Captured!</p>
+        </div>
+        <button id="btn-continue-capture" onclick="proceedFromCapture()" class="btn-journey" disabled>
+          Continue
+          <img class="btn-journey-arrow" src="/icons/continue.svg" alt="continue" style="filter:none;width:90px;height:auto"/>
+        </button>
+      </div>
+    </div>
+
+    <!-- Photo tips callout -->
+    <div style="display:flex;gap:10px;align-items:flex-start;/* background:rgba(195,245,255,0.05); */border:1px solid rgba(195,245,255,0.15);border-radius: 24px;padding:12px 16px;margin:2px auto 0 auto;justify-content: center;max-width: 720px;opacity: .5;">
+      <!-- <span style="font-size:15px;line-height:1;margin-top:1px;flex-shrink:0">💡</span> -->
+      <div style="display:flex;flex-wrap:nowrap;gap:6px 20px;font-family:'Mulish',sans-serif;font-size:16px;color:rgba(255,255,255,0.45);line-height:1.5; padding: 20px; justify-content: center;">
+        <p><strong style="color:rgba(195,245,255,0.6)">Background</strong> <br> Plain wall or clear space works best</p>
+        <p><strong style="color:rgba(195,245,255,0.6)">Lighting</strong> <br> Face the light, avoid bright windows behind you</p>
+        <p><strong style="color:rgba(195,245,255,0.6)">Faces</strong> <br> No sunglasses or hats; AI reads facial features to preserve identity</p>
+        <p><strong style="color:rgba(195,245,255,0.6)">One at a time</strong> <br> Capture each person in your group separately, up to 4 people</p>
+        <p><strong style="color:rgba(195,245,255,0.6)">Framing</strong> <br> At least half body in frame; hold still before capturing</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────
+       PAGE: SETUP (theme + group size)
+  ───────────────────────────────────────────── -->
+  <div id="page-setup" class="app-page" style="padding:30px var(--page-px) 20px;gap:14px">
+    <div class="page-header">
+      <h1 class="page-title">Choose Your Adventure</h1>
+      <p class="page-subtitle" id="setup-page-subtitle">Pick a theme for your transformation</p>
+    </div>
+    <div id="theme-selected-badge" style="display:none;text-align:center">
+      <p style="font-family:'Mulish',sans-serif;font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px">Selected</p>
+      <p id="theme-sel-name" style="font-family:'Epilogue',serif;font-style:italic;font-size:22px;color:#fff"></p>
+    </div>
+
+    <div id="theme-grid" style="flex:1;min-height:0;max-height:560px;overflow-y:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:16px"></div>
+
+    <div id="headcount-section" style="display:none;text-align:center">
+      <p class="dest-section-label" style="text-align:center;margin-bottom:10px">How many people in your group?</p>
+      <div id="headcount-grid" style="display:flex;gap:14px;justify-content:center"></div>
+    </div>
+
+    <div style="text-align:center">
+      <button id="btn-setup-next" onclick="proceedFromSetup()" class="btn-journey" disabled>
+        Continue
+        <img class="btn-journey-arrow" src="/icons/continue.svg" alt="continue" style="filter:none;width:90px;height:auto"/>
+      </button>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────
+       PAGE: LINEUP (character assignment + reroll)
+  ───────────────────────────────────────────── -->
+  <div id="page-lineup" class="app-page" style="padding:30px var(--page-px) 20px;gap:14px">
+    <div class="page-header">
+      <h1 class="page-title">Your Cast</h1>
+      <p class="page-subtitle">Here's who everyone becomes — shuffle for a different pick</p>
+    </div>
+
+    <div id="lineup-grid" style="flex:1;min-height:0;display:flex;flex-wrap:wrap;gap:16px;max-width:1000px;margin:0 auto;width:100%;justify-content: center;"></div>
+
+    <div style="text-align:center">
+      <button id="btn-lineup-next" onclick="navigateTo('background')" class="btn-journey" disabled>
+        Continue
+        <img class="btn-journey-arrow" src="/icons/continue.svg" alt="continue" style="filter:none;width:90px;height:auto"/>
+      </button>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────
+       PAGE: BACKGROUND (scene / location picker)
+  ───────────────────────────────────────────── -->
+  <div id="page-background" class="app-page" style="padding:30px var(--page-px) 20px;gap:14px">
+    <div class="page-header">
+      <h1 class="page-title">Pick a Scene</h1>
+      <p class="page-subtitle">Choose the background for your group photo</p>
+    </div>
+
+    <div id="background-grid" style="flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-radius:12px;overflow-y:auto;overflow-x:hidden"></div>
+
+    <div style="text-align:center">
+      <button id="btn-background-next" onclick="navigateTo('transform')" class="btn-journey" disabled>
+        Transform
+        <img class="btn-journey-arrow" src="/icons/continue.svg" alt="continue" style="filter:none;width:90px;height:auto"/>
+      </button>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────
+       PAGE: TRANSFORM
+  ───────────────────────────────────────────── -->
+  <div id="page-transform" class="app-page" style="padding:30px var(--page-px) 20px;gap:12px">
+    <div class="page-header" style="padding:20px 0 8px">
+      <h1 class="page-title">Transforming</h1>
+      <p class="page-subtitle" id="transform-dest-label">AI is painting your journey…</p>
+    </div>
+
+    <!-- Per-person sub-status row -->
+    <div id="transform-person-list" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"></div>
+
+    <!-- Two panels side by side 50/50 -->
+    <div style="display:flex;flex-direction:row;gap:10px;height:600px;flex-shrink:0">
+      <!-- Source (original "before" photo — kept hidden by design, at all times) -->
+      <div class="transform-panel" style="flex:1; height: 600px; display:none;">
+        <div class="transform-label-chip source"><span class="chip-dot"></span>YOUR GROUP</div>
+        <img id="transform-source-img" src="" alt="source" style="width:100%;height:100%;object-fit:cover;display:block"/>
+      </div>
+      <!-- AI result -->
+      <div class="transform-panel" style="flex:1; height: 600px;">
+        <div class="transform-label-chip ai"><span class="chip-dot"></span>AI SYNTHESIZED</div>
+        <!-- Shimmer + loading animation (shown while waiting, hidden once the result arrives) -->
+        <div id="transform-shimmer" style="position:absolute;inset:0;overflow:hidden;background:#080808;display:flex;align-items:center;justify-content:center">
+          <img src="/animation-while-loading.svg" alt="Loading" style="width:70%;max-width:420px;opacity:0.9;position:relative;z-index:1"/>
+          <div style="position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(0,229,255,0.06) 50%,transparent 70%);animation:shimmer 1.8s infinite linear"></div>
+          <style>@keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}</style>
+        </div>
+        <img id="transform-result-img" src="" alt="result" class="hidden" style="width:100%;height:100%;object-fit:cover;object-position:bottom"/>
+      </div>
+    </div>
+
+    <!-- Progress -->
+    <div style="padding:0 4px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <div>
+          <span id="transform-pct" style="font-family:'Mulish',sans-serif;font-weight:700;font-size:16px;color:#fff">0%</span>
+          <span id="transform-phase" style="font-family:'Mulish',sans-serif;font-size:12px;color:rgba(255,255,255,0.45);margin-left:8px"></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div id="pulse-ring" style="width:10px;height:10px;border-radius:50%;background:var(--accent);animation:pulse 1.4s ease-in-out infinite"></div>
+          <span id="transform-status-label" style="font-family:'Mulish',sans-serif;font-size:11px;color:var(--accent);letter-spacing:0.08em;text-transform:uppercase">Processing</span>
+        </div>
+      </div>
+      <div style="height:2px;background:rgba(255,255,255,0.06);border-radius:1px;overflow:hidden">
+        <div id="progress-bar" class="progress-bar-fill" style="height:100%;width:0%"></div>
+      </div>
+      <p id="transform-detail" style="font-family:'Mulish',sans-serif;font-size:20px;color:rgba(255,255,255,0.3);margin-top:5px"></p>
+      <p id="transform-scene-info" style="font-family:'Mulish',sans-serif;font-size: 24px;font-weight: 300;color:rgba(255,255,255,0.45);margin-top:6px"></p>
+      <div id="transform-error-area" class="hidden">
+        <p id="transform-error-msg" style="font-family:'Mulish',sans-serif;font-size:12px;color:#ffb4ab;padding:8px 0"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────
+       PAGE: RESULT
+  ───────────────────────────────────────────── -->
+  <div id="page-result" class="app-page" style="padding:16px var(--page-px);gap:12px;box-sizing:border-box">
+    <div class="page-header" style="padding:10px 0 6px">
+      <h1 class="page-title" style="font-size:28px">Your Transformation</h1>
+    </div>
+
+    <div style="display:flex;flex-wrap:nowrap;gap:20px;flex:1;min-height:0;width:100%;max-width:1300px;margin:0 auto;align-items:stretch">
+      <!-- Result: outcome image fully contained, never cropped! -->
+      <div style="flex:1;min-width:0;min-height:0;position:relative;display:flex;align-items:center;justify-content:center;background:#080808;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);box-shadow:0 8px 30px rgba(0,0,0,0.6)">
+        <!-- Left: original capture (kept for fallback / toggle) -->
+        <div style="position:relative;overflow:hidden;display:none;">
+          <img id="result-orig-img" src="" alt="Original" style="width:100%;height:100%;object-fit:contain;display:block"/>
+          <div style="position:absolute;top:10px;left:10px">
+            <div class="result-badge dest" style="background:rgba(0,0,0,0.55)">ORIGINAL</div>
+          </div>
+        </div>
+        <!-- Main: AI result (object-fit: contain so 100% of the image is visible without cropping) -->
+        <img id="result-img" src="" alt="AI result" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;object-position:center;display:block;margin:auto"/>
+        <!-- Destination badge -->
+        <div style="position:absolute;top:10px;left:10px;display:flex;gap:6px;align-items:center">
+          <div class="result-badge dest"><span class="chip-dot" style="background:rgba(255,255,255,0.6)"></span><span id="result-dest-label"></span></div>
+          <div class="result-badge ai"><span class="chip-dot"></span>AI TRANSFORMED</div>
+        </div>
+      </div>
+
+      <!-- Right column: token + QR + action buttons -->
+      <div style="width:260px;flex-shrink:0;display:flex;flex-direction:column;gap:10px;justify-content:center">
+        <!-- Token -->
+        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:8px 12px;text-align:center">
+          <p style="font-family:'Mulish',sans-serif;font-weight:600;font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:0.12em;text-transform:uppercase;margin:0 0 2px">Your Token</p>
+          <p id="result-token-label" style="font-family:'Mulish',sans-serif;font-weight:700;font-size:18px;color:var(--accent);letter-spacing:0.08em;margin:0"></p>
+        </div>
+        <!-- QR -->
+        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <p style="font-family:'Mulish',sans-serif;font-size:11px;font-weight:600;color:rgba(255,255,255,0.6);letter-spacing:0.08em;text-transform:uppercase;margin:0 0 8px">Scan to save</p>
+          <div id="qr-code-display" style="background:#fff;padding:6px;border-radius:6px;display:inline-block"></div>
+        </div>
+        <!-- Actions -->
+        <div style="display:flex;gap:6px">
+          <button id="btn-result-download" onclick="downloadResult()"
+            style="flex:1;padding:10px 8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);border-radius:6px;font-family:'Mulish',sans-serif;font-weight:600;font-size:12px;color:#fff;cursor:pointer;transition:all 0.2s"
+            onmouseover="this.style.background='rgba(0,229,255,0.15)';this.style.borderColor='var(--accent)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(255,255,255,0.18)'">
+            ↓ Download
+          </button>
+          <button id="btn-result-print" onclick="printResult()"
+            style="flex:1;padding:10px 8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);border-radius:6px;font-family:'Mulish',sans-serif;font-weight:600;font-size:12px;color:#fff;cursor:pointer;transition:all 0.2s"
+            onmouseover="this.style.background='rgba(0,229,255,0.15)';this.style.borderColor='var(--accent)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(255,255,255,0.18)'">
+            ⎙ Print
+          </button>
+        </div>
+        <button onclick="startNewJourney()" class="btn-journey" style="margin-top:2px;font-size:17px;padding:10px 18px">
+          Start Over
+        </button>
+        <!-- Recent gallery -->
+        <div style="margin-top:2px">
+          <p style="font-family:'Mulish',sans-serif;font-size:10px;color:rgba(255,255,255,0.35);letter-spacing:0.1em;text-transform:uppercase;margin:0 0 4px">Recent</p>
+          <div id="result-recent-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────
+       PAGE: GALLERY
+  ───────────────────────────────────────────── -->
+  <div id="page-gallery" class="app-page" style="padding:30px var(--page-px) 20px;gap:14px">
+    <div class="page-header">
+      <h1 class="page-title">Gallery</h1>
+      <p class="page-subtitle">All transformations</p>
+    </div>
+    <!-- Admin bar -->
+    <div id="gallery-admin-bar" class="hidden" style="display:flex;gap:8px;align-items:center;justify-content:center">
+      <div style="font-family:'Mulish',sans-serif;font-size:11px;color:rgba(255,255,255,0.4)">
+        Total: <span id="admin-stat-total" style="color:#fff;font-weight:700">0</span>
+      </div>
+      <div id="admin-stat-bar"></div>
+    </div>
+
+    <!-- Filter -->
+    <div id="gallery-filter" style="display:flex;gap:20px;flex-wrap:wrap;justify-content: center; margin-bottom: 30px;"></div>
+
+    <!-- Admin bulk actions -->
+    <div id="gallery-bulk-actions" class="hidden" style="display:flex;gap:8px;justify-content:center;margin-bottom:16px">
+      <button onclick="downloadAllGallery()"
+        style="display:flex;align-items:center;gap:6px;padding:9px 18px;background:none;border:1px solid rgba(255,255,255,0.15);border-radius:5px;font-family:'Mulish',sans-serif;font-weight:500;font-size:12px;color:rgba(255,255,255,0.7);cursor:pointer;transition:background 0.2s,color 0.2s"
+        onmouseover="this.style.background='rgba(255,255,255,0.06)';this.style.color='#fff'"
+        onmouseout="this.style.background='none';this.style.color='rgba(255,255,255,0.7)'">
+        ↓ Download All
+      </button>
+      <button onclick="deleteAllGallery()"
+        style="display:flex;align-items:center;gap:6px;padding:9px 18px;background:none;border:1px solid rgba(147,0,10,0.45);border-radius:5px;font-family:'Mulish',sans-serif;font-weight:500;font-size:12px;color:rgba(255,100,100,0.75);cursor:pointer;transition:background 0.2s,color 0.2s"
+        onmouseover="this.style.background='rgba(147,0,10,0.15)';this.style.color='#ffb4ab'"
+        onmouseout="this.style.background='none';this.style.color='rgba(255,100,100,0.75)'">
+        ⌫ Delete All
+      </button>
+    </div>
+
+    <!-- Grid -->
+    <div style="flex:1;min-height:0;overflow-y:auto">
+      <div id="gallery-items" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px"></div>
+      <div id="gallery-grid" style="display:none"></div>
+      <div id="gallery-empty" class="hidden" style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:8px;opacity:0.4">
+        <p style="font-family:'Epilogue',serif;font-style:italic;font-size:32px;color:#fff">No images yet</p>
+        <p style="font-family:'Mulish',sans-serif;font-size:13px;color:rgba(255,255,255,0.5)">Complete a transformation to see it here</p>
+      </div>
+      <div id="gallery-loading" style="display:flex;align-items:center;justify-content:center;height:100px">
+        <div style="width:24px;height:24px;border-radius:50%;border:2px solid rgba(0,229,255,0.2);border-top-color:var(--accent);animation:spin 1s linear infinite"></div>
+        <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /pages-wrapper -->
+
+<!-- ══════════════════════════════════════════════════════════════
+     JOURNEY ZONE  (breadcrumb — between pages and footer)
+══════════════════════════════════════════════════════════════ -->
+<div id="journey-zone">
+  <div id="journey-breadcrumb-wrapper">
+    <ol id="journey-nav" class="journey-nav"></ol>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     BOTTOM ZONE  (footer only)
+══════════════════════════════════════════════════════════════ -->
+<div id="bottom-zone">
+  <div id="app-footer">
+    <button class="footer-btn" onclick="showHelp()">help</button>
+    <button class="footer-btn" onclick="openAdminModal()">admin</button>
+  </div>
+</div>
+
+<!-- Hidden compat: sidebar-gallery-btn (referenced by updateGalleryVisibility in app.js) -->
+<button id="sidebar-gallery-btn" style="display:none" onclick="navigateTo('gallery')"></button>
+
+</div><!-- /kiosk-root -->
+
+<!-- ══════════════════════════════════════════════════════════════
+     DOT FIELD — Vanilla JS port of ReactBits DotField
+══════════════════════════════════════════════════════════════ -->
+<!-- <script>
+(function initDotField() {
+  const container = document.getElementById('dot-field-bg');
+  const canvas    = document.getElementById('dot-field-canvas');
+  const glowEl    = document.getElementById('dot-glow-circle');
+  if (!canvas || !container) return;
+
+  const cfg = {
+    dotRadius:    3,
+    dotSpacing:   16,
+    cursorRadius: 400,
+    bulgeOnly:    true,
+    bulgeStrength: 33,
+    sparkle:      true,
+    waveAmplitude: 0,
+    gradientFrom: 'rgba(0,229,255,0.18)',
+    gradientTo:   'rgba(0,229,255,0.07)',
+  };
+
+  const TWO_PI = Math.PI * 2;
+  const ctx    = canvas.getContext('2d', { alpha: true });
+  const dpr    = Math.min(window.devicePixelRatio || 1, 2);
+  let dots     = [];
+  let size     = { w: 0, h: 0, offsetX: 0, offsetY: 0 };
+  const mouse  = { x: -9999, y: -9999, prevX: -9999, prevY: -9999, speed: 0 };
+  let glowOpacity = 0;
+  let engagement  = 0;
+  let frameCount  = 0;
+  let resizeTimer;
+
+  function buildDots(w, h) {
+    const step = cfg.dotRadius + cfg.dotSpacing;
+    const cols = Math.floor(w / step);
+    const rows = Math.floor(h / step);
+    const padX = (w % step) / 2;
+    const padY = (h % step) / 2;
+    dots = [];
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const ax = padX + c * step + step / 2;
+        const ay = padY + r * step + step / 2;
+        dots.push({ ax, ay, sx: ax, sy: ay, vx: 0, vy: 0 });
+      }
+    }
+  }
+
+  function doResize() {
+    const rect = container.getBoundingClientRect();
+    const w = rect.width, h = rect.height;
+    canvas.width  = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width  = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    size = { w, h, offsetX: rect.left + window.scrollX, offsetY: rect.top + window.scrollY };
+    buildDots(w, h);
+  }
+
+  window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(doResize, 100); });
+  window.addEventListener('mousemove', e => {
+    mouse.x = e.pageX - size.offsetX;
+    mouse.y = e.pageY - size.offsetY;
+  }, { passive: true });
+
+  setInterval(() => {
+    const dx = mouse.prevX - mouse.x, dy = mouse.prevY - mouse.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    mouse.speed += (dist - mouse.speed) * 0.5;
+    if (mouse.speed < 0.001) mouse.speed = 0;
+    mouse.prevX = mouse.x; mouse.prevY = mouse.y;
+  }, 20);
+
+  function tick() {
+    frameCount++;
+    const { w, h } = size;
+    const t    = frameCount * 0.02;
+    const len  = dots.length;
+    const cr   = cfg.cursorRadius;
+    const crSq = cr * cr;
+    const rad  = cfg.dotRadius / 2;
+
+    const targetEng = Math.min(mouse.speed / 5, 1);
+    engagement  += (targetEng - engagement) * 0.06;
+    if (engagement < 0.001) engagement = 0;
+    glowOpacity += (engagement - glowOpacity) * 0.08;
+
+    if (glowEl) {
+      glowEl.setAttribute('cx', mouse.x);
+      glowEl.setAttribute('cy', mouse.y);
+      glowEl.style.opacity = glowOpacity;
+    }
+
+    ctx.clearRect(0, 0, w, h);
+    const grad = ctx.createLinearGradient(0, 0, w, h);
+    grad.addColorStop(0, cfg.gradientFrom);
+    grad.addColorStop(1, cfg.gradientTo);
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+
+    for (let i = 0; i < len; i++) {
+      const d  = dots[i];
+      const dx = mouse.x - d.ax, dy = mouse.y - d.ay;
+      const distSq = dx*dx + dy*dy;
+
+      if (distSq < crSq && engagement > 0.01) {
+        const dist  = Math.sqrt(distSq);
+        const tt    = 1 - dist / cr;
+        const push  = tt * tt * cfg.bulgeStrength * engagement;
+        const angle = Math.atan2(dy, dx);
+        d.sx += (d.ax - Math.cos(angle) * push - d.sx) * 0.15;
+        d.sy += (d.ay - Math.sin(angle) * push - d.sy) * 0.15;
+      } else {
+        d.sx += (d.ax - d.sx) * 0.1;
+        d.sy += (d.ay - d.sy) * 0.1;
+      }
+
+      let drawX = d.sx, drawY = d.sy;
+      if (cfg.waveAmplitude > 0) {
+        drawY += Math.sin(d.ax * 0.03 + t) * cfg.waveAmplitude;
+        drawX += Math.cos(d.ay * 0.03 + t * 0.7) * cfg.waveAmplitude * 0.5;
+      }
+
+      if (cfg.sparkle) {
+        const hash = ((i * 2654435761) ^ (frameCount >> 3)) >>> 0;
+        const r2   = (hash % 100) < 3 ? rad * 1.8 : rad;
+        ctx.moveTo(drawX + r2, drawY);
+        ctx.arc(drawX, drawY, r2, 0, TWO_PI);
+      } else {
+        ctx.moveTo(drawX + rad, drawY);
+        ctx.arc(drawX, drawY, rad, 0, TWO_PI);
+      }
+    }
+
+    ctx.fill();
+    requestAnimationFrame(tick);
+  }
+
+  doResize();
+  requestAnimationFrame(tick);
+})();
+</script> -->
+
+<!-- ══════════════════════════════════════════════════════════════
+     OGL LIGHTFALL  — ReactBits reference shader
+══════════════════════════════════════════════════════════════ -->
+<script type="module">
+import { Renderer, Program, Mesh, Geometry } from 'https://cdn.jsdelivr.net/npm/ogl/dist/ogl.mjs';
+
+const MAX_COLORS       = 8;
+const COLORS           = ['#ffffff', '#89d318', '#10B981', '#255a0b'];
+const BG_COLOR          = '#293662';
+const SPEED             = 0.6;
+const STREAK_COUNT      = 2;
+const STREAK_WIDTH      = 0.6;
+const STREAK_LENGTH     = 3;
+const GLOW              = 0.7;
+const DENSITY           = 0.8;
+const TWINKLE           = 1;
+const ZOOM              = 1.7;
+const BG_GLOW           = 0;
+const OPACITY           = 1;
+const MOUSE_INTERACTION = false;
+const MOUSE_STRENGTH    = 0.5;
+const MOUSE_RADIUS      = 1;
+const MOUSE_DAMPENING   = 0.15;
+
+function hexToRGB(hex) {
+  const c = hex.replace('#', '').padEnd(6, '0');
+  const r = parseInt(c.slice(0, 2), 16) / 255;
+  const g = parseInt(c.slice(2, 4), 16) / 255;
+  const b = parseInt(c.slice(4, 6), 16) / 255;
+  return [r, g, b];
+}
+
+function prepColors(input) {
+  const base  = (input && input.length ? input : ['#A6C8FF', '#5227FF', '#FF9FFC']).slice(0, MAX_COLORS);
+  const count = base.length;
+  const arr = [];
+  for (let i = 0; i < MAX_COLORS; i++) arr.push(hexToRGB(base[Math.min(i, base.length - 1)]));
+  const avg = [0, 0, 0];
+  for (let i = 0; i < count; i++) {
+    avg[0] += arr[i][0]; avg[1] += arr[i][1]; avg[2] += arr[i][2];
+  }
+  avg[0] /= count; avg[1] /= count; avg[2] /= count;
+  return { arr, count, avg };
+}
+
+const vert = /* glsl */`
+  attribute vec2 position;
+  attribute vec2 uv;
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = vec4(position, 0.0, 1.0);
+  }
+`;
+
+const frag = /* glsl */`
+  precision highp float;
+
+  uniform vec3  iResolution;
+  uniform vec2  iMouse;
+  uniform float iTime;
+
+  uniform vec3  uColor0;
+  uniform vec3  uColor1;
+  uniform vec3  uColor2;
+  uniform vec3  uColor3;
+  uniform vec3  uColor4;
+  uniform vec3  uColor5;
+  uniform vec3  uColor6;
+  uniform vec3  uColor7;
+  uniform int   uColorCount;
+
+  uniform vec3  uBgColor;
+  uniform vec3  uMouseColor;
+  uniform float uSpeed;
+  uniform int   uStreakCount;
+  uniform float uStreakWidth;
+  uniform float uStreakLength;
+  uniform float uGlow;
+  uniform float uDensity;
+  uniform float uTwinkle;
+  uniform float uZoom;
+  uniform float uBgGlow;
+  uniform float uOpacity;
+  uniform float uMouseEnabled;
+  uniform float uMouseStrength;
+  uniform float uMouseRadius;
+
+  varying vec2 vUv;
+
+  vec3 palette(float h) {
+    int count = uColorCount;
+    if (count < 1) count = 1;
+    int idx = int(floor(clamp(h, 0.0, 0.999999) * float(count)));
+    if (idx <= 0) return uColor0;
+    if (idx == 1) return uColor1;
+    if (idx == 2) return uColor2;
+    if (idx == 3) return uColor3;
+    if (idx == 4) return uColor4;
+    if (idx == 5) return uColor5;
+    if (idx == 6) return uColor6;
+    return uColor7;
+  }
+
+  vec3 tanhv(vec3 x) {
+    vec3 e = exp(-2.0 * x);
+    return (1.0 - e) / (1.0 + e);
+  }
+
+  vec2 sceneC(vec2 frag, vec2 r) {
+    vec2 P = (frag + frag - r) / r.x;
+    float z = 0.0;
+    float d = 1e3;
+    vec4 O = vec4(0.0);
+    for (int k = 0; k < 39; k++) {
+      if (d <= 1e-4) break;
+      O = z * normalize(vec4(P, uZoom, 0.0)) - vec4(0.0, 4.0, 1.0, 0.0) / 4.5;
+      d = 1.0 - sqrt(length(O * O));
+      z += d;
+    }
+    return vec2(O.x, atan(O.z, O.y));
+  }
+
+  void mainImage(out vec4 o, vec2 C) {
+    vec2 r = iResolution.xy;
+    vec2 uv0 = (C + C - r) / r.x;
+    float T = 0.1 * iTime * uSpeed + 9.0;
+    float angRings = max(1.0, floor(6.28318530718 * max(uDensity, 0.05) + 0.5));
+    vec2 Y = vec2(5e-3, 6.28318530718 / angRings);
+
+    vec2 c0 = sceneC(C, r);
+    vec2 cdx = sceneC(C + vec2(1.0, 0.0), r);
+    vec2 cdy = sceneC(C + vec2(0.0, 1.0), r);
+    vec2 dCx = cdx - c0;
+    vec2 dCy = cdy - c0;
+    dCx.y -= 6.28318530718 * floor(dCx.y / 6.28318530718 + 0.5);
+    dCy.y -= 6.28318530718 * floor(dCy.y / 6.28318530718 + 0.5);
+    vec2 fw = abs(dCx) + abs(dCy);
+    C = c0;
+
+    vec2 P = vec2(2.0, 1.0) * uv0 - (r / r.x) * vec2(0.0, 1.0);
+    vec4 O = vec4(uBgColor * 90.0 * uBgGlow / (1e3 * dot(P, P) + 6.0), 0.0);
+
+    float mGlow = 0.0;
+    if (uMouseEnabled > 0.5) {
+      vec2 mN = (iMouse + iMouse - r) / r.x;
+      float md = length(uv0 - mN);
+      mGlow = exp(-md * md / max(uMouseRadius * uMouseRadius, 1e-4)) * uMouseStrength;
+      O.rgb += uMouseColor * mGlow * 0.25;
+    }
+
+    float zr = 5e-4 * uStreakWidth;
+    vec2 rr = vec2(max(length(fw), 1e-5));
+    float tail = 19.0 / max(uStreakLength, 0.05);
+
+    for (int m = 0; m < 16; m++) {
+      if (m >= uStreakCount) break;
+      float jf = float(m) + 1.0;
+      float ic = fract(sin(dot(vec2(jf, floor(C.x / Y.x + 0.5)), vec2(7.0, 11.0)) * 73.0));
+      vec2 Pp = C - (T + T * ic) * vec2(0.0, 1.0);
+      Pp -= floor(Pp / Y + 0.5) * Y;
+      float h = fract(8663.0 * ic);
+      vec3 col = palette(h);
+      float weight = mix(1.5, 1.0 + sin(T + 7.0 * h + 4.0), uTwinkle);
+      weight *= (1.0 + mGlow * 2.0);
+      vec2 inner = vec2(length(max(Pp, vec2(-1.0, 0.0))), length(Pp) - zr) - zr;
+      vec2 sm = vec2(1.0) - smoothstep(-rr, rr, inner);
+      O.rgb += dot(sm, vec2(exp(tail * Pp.y), 3.0)) * col * weight;
+      C.x += Y.x / 8.0;
+    }
+
+    vec3 colr = sqrt(tanhv(max(O.rgb * uGlow - vec3(0.04, 0.08, 0.02), 0.0)));
+    o = vec4(colr, uOpacity);
+  }
+
+  void main() {
+    vec4 color;
+    mainImage(color, vUv * iResolution.xy);
+    gl_FragColor = color;
+  }
+`;
+
+let lightfallInited = false;
+
+function initLightfall(container) {
+  if (lightfallInited) return;
+  const w = container.clientWidth;
+  const h = container.clientHeight;
+  if (w < 10 || h < 10) return;
+  lightfallInited = true;
+
+  const renderer = new Renderer({ alpha: true, antialias: true, dpr: window.devicePixelRatio || 1 });
+  const gl = renderer.gl;
+  const canvas = gl.canvas;
+  canvas.style.width   = '100%';
+  canvas.style.height  = '100%';
+  canvas.style.display = 'block';
+  container.appendChild(canvas);
+
+  // Fullscreen triangle — replaces OGL's Triangle helper (not exported from CDN build)
+  const geometry = new Geometry(gl, {
+    position: { size: 2, data: new Float32Array([-1, -1,  3, -1,  -1, 3]) },
+    uv:       { size: 2, data: new Float32Array([ 0,  0,  2,  0,   0, 2]) },
+  });
+
+  const { arr, count, avg } = prepColors(COLORS);
+
+  const uniforms = {
+    iResolution:    { value: [gl.drawingBufferWidth, gl.drawingBufferHeight, 1] },
+    iMouse:         { value: [0, 0] },
+    iTime:          { value: 0 },
+    uColor0:        { value: arr[0] },
+    uColor1:        { value: arr[1] },
+    uColor2:        { value: arr[2] },
+    uColor3:        { value: arr[3] },
+    uColor4:        { value: arr[4] },
+    uColor5:        { value: arr[5] },
+    uColor6:        { value: arr[6] },
+    uColor7:        { value: arr[7] },
+    uColorCount:    { value: count },
+    uBgColor:       { value: hexToRGB(BG_COLOR) },
+    uMouseColor:    { value: avg },
+    uSpeed:         { value: SPEED },
+    uStreakCount:   { value: Math.max(1, Math.min(16, Math.round(STREAK_COUNT))) },
+    uStreakWidth:   { value: STREAK_WIDTH },
+    uStreakLength:  { value: STREAK_LENGTH },
+    uGlow:          { value: GLOW },
+    uDensity:       { value: DENSITY },
+    uTwinkle:       { value: TWINKLE },
+    uZoom:          { value: ZOOM },
+    uBgGlow:        { value: BG_GLOW },
+    uOpacity:       { value: OPACITY },
+    uMouseEnabled:  { value: MOUSE_INTERACTION ? 1 : 0 },
+    uMouseStrength: { value: MOUSE_STRENGTH },
+    uMouseRadius:   { value: MOUSE_RADIUS },
+  };
+
+  const program = new Program(gl, { vertex: vert, fragment: frag, uniforms });
+  const mesh    = new Mesh(gl, { geometry, program });
+
+  function resize() {
+    const rect = container.getBoundingClientRect();
+    renderer.setSize(rect.width, rect.height);
+    uniforms.iResolution.value = [gl.drawingBufferWidth, gl.drawingBufferHeight, 1];
+  }
+  resize();
+  const ro = new ResizeObserver(resize);
+  ro.observe(container);
+
+  let mouseTarget = [0, 0];
+  let lastTime    = 0;
+
+  if (MOUSE_INTERACTION) {
+    canvas.addEventListener('pointermove', e => {
+      const rect  = canvas.getBoundingClientRect();
+      const scale = renderer.dpr || 1;
+      const x = (e.clientX - rect.left) * scale;
+      const y = (rect.height - (e.clientY - rect.top)) * scale;
+      mouseTarget = [x, y];
+      if (MOUSE_DAMPENING <= 0) uniforms.iMouse.value = [x, y];
+    });
+  }
+
+  function frame(t) {
+    requestAnimationFrame(frame);
+    uniforms.iTime.value = t * 0.001;
+    if (MOUSE_INTERACTION && MOUSE_DAMPENING > 0) {
+      if (!lastTime) lastTime = t;
+      const dt = (t - lastTime) / 1000;
+      lastTime = t;
+      const factor = Math.min(1, 1 - Math.exp(-dt / Math.max(1e-4, MOUSE_DAMPENING)));
+      const cur = uniforms.iMouse.value;
+      cur[0] += (mouseTarget[0] - cur[0]) * factor;
+      cur[1] += (mouseTarget[1] - cur[1]) * factor;
+    }
+    renderer.render({ scene: mesh });
+  }
+  requestAnimationFrame(frame);
+}
+
+// Trigger init when pages-wrapper gives the container real dimensions
+const container = document.getElementById('bg-canvas-container');
+if (container) {
+  const tryInit = () => {
+    if (!lightfallInited && container.clientWidth > 10) initLightfall(container);
+  };
+  // Watch for home page becoming visible (showPage sets inline style)
+  const homeEl = document.getElementById('page-home');
+  if (homeEl) {
+    const mo = new MutationObserver(tryInit);
+    mo.observe(homeEl, { attributes: true, attributeFilter: ['style'] });
+  }
+  const ro = new ResizeObserver(entries => {
+    for (const e of entries) { if (e.contentRect.width > 10) tryInit(); }
+  });
+  ro.observe(container);
+  setTimeout(tryInit, 300);
+}
+</script>
+
+<script src="app.js?v=14"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+# ─────────────────────────────────────────────────────────────────
+# Lumina Horizon – Render.com Dockerfile
+# python:3.12-slim + FastAPI/uvicorn
+#
+# PORT is injected automatically by Render at runtime.
+# All secrets / env vars are configured through the Render dashboard
+# (no .env file is mounted here).
+#
+# BASE_URL must be set AFTER your first deploy once Render assigns
+# your service URL (e.g. https://lumina-horizon.onrender.com).
+# Until then the app works but QR-code retrieval links will be wrong.
+# ─────────────────────────────────────────────────────────────────
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# System packages needed by rembg / Pillow / qrcode
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+       libgl1 \
+       libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Python dependencies
+COPY server-code/requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Application code
+COPY server-code/ /app/
+COPY web-app/     /app/web-app/
+
+# Destination images (served at /imgs/)
+COPY imgs/ /app/imgs/
+
+# Writable runtime dirs
+# NOTE: On Render Free tier the filesystem is ephemeral (wiped on redeploy/restart).
+# Attach a Render Disk at /app/gallery and /app/uploads to persist data.
+RUN mkdir -p /app/uploads /app/gallery
+
+EXPOSE 10002
+
+# Use shell form so $PORT is expanded at runtime by the shell.
+# Falls back to 10002 if PORT is not set (local testing).
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-10002}"]

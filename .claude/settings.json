@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -)",
+      "Bash(curl -s http://localhost:10003/health)",
+      "Bash(curl -s http://localhost:10003/config)",
+      "Bash(python -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('themes:', list\\(d['themes'].keys\\(\\)\\)\\)\")",
+      "Bash(python -c ' *)",
+      "Bash(python -m py_compile main.py)",
+      "Bash(python -m venv .venv_test2)",
+      "Bash(echo \"EXIT: $?\")",
+      "WebFetch(domain:replicate.com)",
+      "WebSearch",
+      "WebFetch(domain:ai.google.dev)"
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+# ─────────────────────────────────────────────────────────────────
+# render.yaml – Render Blueprint
+# https://render.com/docs/blueprint-spec
+#
+# Commit this file to the root of your GitHub repo.
+# In Render dashboard: New → Blueprint → connect repo → deploy.
+# ─────────────────────────────────────────────────────────────────
+services:
+  - type: web
+    name: lumina-horizon
+    runtime: docker
+    # Point to the Render-specific Dockerfile
+    dockerfilePath: ./for-deploy-webapp/Dockerfile.render
+    dockerContext: ./for-deploy-webapp
+    # Render auto-assigns PORT; the Dockerfile CMD uses ${PORT:-10002}
+    plan: starter          # change to 'standard' or higher for persistent disk
+
+    envVars:
+      # ── Required secrets – set these in the Render dashboard ──────
+      - key: REPLICATE_API_TOKEN
+        sync: false        # marks it as a secret; you fill it in the dashboard
+
+      # ── BASE_URL: set AFTER first deploy once Render gives you a URL ──
+      # e.g. https://lumina-horizon.onrender.com
+      - key: BASE_URL
+        sync: false
+
+      # ── Optional overrides (safe defaults shown) ──────────────────
+      - key: ENABLE_CORS
+        value: "true"      # Render proxies requests; CORS must be enabled
+
+      - key: ADMIN_USERNAME
+        sync: false        # override the default "admin" in dashboard
+
+      - key: ADMIN_PASSWORD
+        sync: false        # override the default in dashboard
+
+    # ── Persistent storage (requires Render paid plan) ────────────
+    # Uncomment the two disk entries below if you want gallery/uploads
+    # to survive redeploys. Free tier filesystem is ephemeral.
+    #
+    # disk:
+    #   name: lumina-data
+    #   mountPath: /app/gallery
+    #   sizeGB: 5
+    #
+    # For uploads dir, add a second disk or symlink inside the container.
+
+    healthCheckPath: /health

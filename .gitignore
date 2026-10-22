@@ -1,0 +1,42 @@
+# ── Python ────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ── Virtual environments ──────────────────────────────────────────
+venv/
+.venv/
+env/
+.env_dir/
+
+# ── Secrets / environment variables ──────────────────────────────
+.env
+# keep the example template
+!.env.example
+
+# ── Runtime data (ephemeral or sensitive) ────────────────────────
+server-code/uploads/
+server-code/gallery/
+server-code/gallery/gallery_metadata.json
+server-code/retrieval_log.csv
+server-code/retrieval_log.txt
+server-code/admin_sessions.json
+
+server-code-cache/
+
+# ── OS / editor noise ────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# ── Docker build cache ────────────────────────────────────────────
+*.dockerignore

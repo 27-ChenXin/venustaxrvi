@@ -1,0 +1,50 @@
+/* ─────────────────────────────────────────────────────────────────
+   ASA AI Dream Machine – Supplemental Styles
+   All design-token / component CSS lives in index.html <style>.
+   This file covers only overrides and Tailwind CDN gaps.
+   ───────────────────────────────────────────────────────────────── */
+
+/* ── btn-journey disabled state (DD confirm button) ─────────────── */
+.btn-journey[disabled],
+.btn-journey:disabled {
+  opacity: 0.22;
+  cursor: not-allowed;
+}
+
+/* ── Style option selected state ─────────────────────────────────── */
+.style-option.selected {
+  border-color: #00e5ff !important;
+  background: rgba(0, 229, 255, 0.06) !important;
+}
+
+/* ── Quote card selected state ──────────────────────────────────── */
+.quote-card.selected {
+  border-color: #00e5ff !important;
+  outline: 1px solid rgba(0, 229, 255, 0.35);
+}
+
+/* ── Destination card hover / selected ──────────────────────────── */
+.dest-card { position: relative; }
+.dest-card.selected-dest {
+  box-shadow: 0 0 0 2px #00e5ff;
+}
+
+/* ── Progress bar transition ─────────────────────────────────────── */
+#progress-bar {
+  transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── No-scrollbar ────────────────────────────────────────────────── */
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* ── QR code ─────────────────────────────────────────────────────── */
+#qr-code-display img,
+#qr-code-display canvas { border-radius: 8px; }
+
+/* ── Gallery card hover ──────────────────────────────────────────── */
+.gallery-card { cursor: pointer; transition: transform 0.2s; }
+.gallery-card:hover { transform: scale(1.03); }
+
+/* ── Error modal hidden state ────────────────────────────────────── */
+.hidden { display: none !important; }
