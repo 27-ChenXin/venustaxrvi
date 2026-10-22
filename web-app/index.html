@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="dark" lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -14,10 +14,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
 
-<link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
-<link rel="manifest" href="/favicons/site.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="favicons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicons/favicon-16x16.png">
+<link rel="manifest" href="favicons/site.webmanifest">
 <title>Immersive AI Cosplayers MultiVerse</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <!-- QR Code generator -->
@@ -1134,13 +1134,13 @@ html, body {
 <header id="app-header">
   <!-- Brand -->
   <div class="header-brand">
-    <!-- <img src="/imgs/kiosk-logo.png" alt="Kiosk Logo" style="max-width: 150px;height:auto;pointer-events:none;margin-right: 15px;margin-left: -30px;margin-top: 0;display: inline-block;"/> -->
+    <!-- <img src="imgs/kiosk-logo.png" alt="Kiosk Logo" style="max-width: 150px;height:auto;pointer-events:none;margin-right: 15px;margin-left: -30px;margin-top: 0;display: inline-block;"/> -->
     <span class="brand-asa">Immersive AI</span> 
     <span class="brand-ai"> Cosplayers</span> <span class="brand-rest">MultiVerse</span>
   </div>
   <!-- Home icon (centre) -->
   <button class="header-home-btn" onclick="navigateTo('home')" title="Home">
-    <img src="/icons/home.svg" alt="Home"/>
+    <img src="icons/home.svg" alt="Home"/>
   </button>
   <!-- Right nav -->
   <div class="header-nav-right">
@@ -1162,7 +1162,7 @@ html, body {
 ══════════════════════════════════════════════════════════════ -->
 <div id="pages-wrapper">
   <!-- <div style="text-align:center;padding:24px 0 0;position: absolute;left: 50%;bottom: 0;transform: translate(-300px);z-index:10;display: flex;justify-content: center;align-items: center;width: 600px;">
-      <img src="/imgs/kiosk-logo.png" alt="Kiosk Logo" style="max-width:160px;height:auto;pointer-events:none"/>
+      <img src="imgs/kiosk-logo.png" alt="Kiosk Logo" style="max-width:160px;height:auto;pointer-events:none"/>
       <p style="font-family: 'Mulish',serif;font-size: 26px;font-weight: 200;font-style:italic;/* color: white; */color: rgba(255,255,255,0.65);margin-left:12px;pointer-events:none">Joy to Travel Smart Lifestyle!</p>
   </div> -->
   <!-- ─────────────────────────────────────────────
@@ -1175,51 +1175,51 @@ html, body {
     <!-- Title + tagline + Start Journey, centered over orb -->
     <div class="home-title-block">
       <div style="width:100%;display:flex;justify-content:center;margin-bottom: 15px;">
-        <img src="/imgs/kiosk-logo.png" alt="Kiosk Logo" style="max-width:200px;height:auto;pointer-events:none; display: none;"/>
+        <img src="imgs/kiosk-logo.png" alt="Kiosk Logo" style="max-width:200px;height:auto;pointer-events:none; display: none;"/>
       </div>
       <!-- <p class="home-asa-ai"><span class="t-asa">ASA</span> <span class="t-ai">AI</span></p> -->
       <div style="width:100%;display:flex;align-items:center;justify-content:center;margin-bottom:15px;gap:20px">
         <div style="width:50%;display:flex;justify-content:center">
-          <img src="/imgs/logos/rvi-logo.png" alt="RVI Logo" style="max-height:90px;max-width:320px;width:auto;height:auto;object-fit:contain;pointer-events:none"/>
+          <img src="imgs/logos/rvi-logo.png" alt="RVI Logo" style="max-height:90px;max-width:320px;width:auto;height:auto;object-fit:contain;pointer-events:none"/>
         </div>
         <div style="width:50%;display:flex;justify-content:center">
-          <img src="/imgs/logos/venusta-logo.png?v=2" alt="Venusta Logo" style="max-height:90px;max-width:340px;width:auto;height:auto;object-fit:contain;pointer-events:none"/>
+          <img src="imgs/logos/venusta-logo.png?v=2" alt="Venusta Logo" style="max-height:90px;max-width:340px;width:auto;height:auto;object-fit:contain;pointer-events:none"/>
         </div>
       </div>
       <p class="home-dream"><span class="t-ai">Theme</span>Painter</p>
       <p class="home-tagline">Come as you may. You are free to imagine.</p>
       <button class="btn-journey" onclick="startNewJourney()" style="pointer-events:auto">
         Begin Transformation
-        <img class="btn-journey-arrow" src="/icons/continue.svg" alt="→" style="filter:none;width:90px;height:auto"/>
+        <img class="btn-journey-arrow" src="icons/continue.svg" alt="→" style="filter:none;width:90px;height:auto"/>
       </button>
     </div>
     <!-- State display (all locked, static — sits closer to the blob) -->
     <ol id="home-step-row" class="journey-nav">
-      <li class="journey-step-locked"><span class="step-inner"><span class="step-icon"><img src="/icons/destination.svg" alt="setup"/></span><span class="step-dot"></span><span class="step-label">setup</span></span></li>
-      <li class="journey-step-locked"><span class="step-inner"><span class="step-icon"><img src="/icons/capture.svg" alt="capture"/></span><span class="step-dot"></span><span class="step-label">capture</span></span></li>
-      <li class="journey-step-locked"><span class="step-inner"><span class="step-icon"><img src="/icons/styles.svg" alt="lineup"/></span><span class="step-dot"></span><span class="step-label">lineup</span></span></li>
-      <li class="journey-step-locked"><span class="step-inner"><span class="step-icon"><img src="/icons/countries.svg" alt="background"/></span><span class="step-dot"></span><span class="step-label">background</span></span></li>
-      <li class="journey-step-locked"><span class="step-inner"><span class="step-icon"><img src="/icons/transform.svg" alt="transform"/></span><span class="step-dot"></span><span class="step-label">transform</span></span></li>
-      <li class="journey-step-locked"><span class="step-inner"><span class="step-icon"><img src="/icons/result.svg" alt="result"/></span><span class="step-dot"></span><span class="step-label">result</span></span></li>
+      <li class="journey-step-locked"><span class="step-inner"><span class="step-icon"><img src="icons/destination.svg" alt="setup"/></span><span class="step-dot"></span><span class="step-label">setup</span></span></li>
+      <li class="journey-step-locked"><span class="step-inner"><span class="step-icon"><img src="icons/capture.svg" alt="capture"/></span><span class="step-dot"></span><span class="step-label">capture</span></span></li>
+      <li class="journey-step-locked"><span class="step-inner"><span class="step-icon"><img src="icons/styles.svg" alt="lineup"/></span><span class="step-dot"></span><span class="step-label">lineup</span></span></li>
+      <li class="journey-step-locked"><span class="step-inner"><span class="step-icon"><img src="icons/countries.svg" alt="background"/></span><span class="step-dot"></span><span class="step-label">background</span></span></li>
+      <li class="journey-step-locked"><span class="step-inner"><span class="step-icon"><img src="icons/transform.svg" alt="transform"/></span><span class="step-dot"></span><span class="step-label">transform</span></span></li>
+      <li class="journey-step-locked"><span class="step-inner"><span class="step-icon"><img src="icons/result.svg" alt="result"/></span><span class="step-dot"></span><span class="step-label">result</span></span></li>
     </ol>
     <!-- Stats panel — lives here in page-home, always visible on home -->
     <div id="home-stats-panel">
       <div class="stat-item">
-        <img src="/icons/countries.svg" alt="countries"/>
+        <img src="icons/countries.svg" alt="countries"/>
         <div>
           <div class="stat-num" id="stat-destinations">0</div>
           <div class="stat-label">Themes</div>
         </div>
       </div>
       <div class="stat-item">
-        <img src="/icons/styles.svg" alt="styles"/>
+        <img src="icons/styles.svg" alt="styles"/>
         <div>
           <div class="stat-num" id="stat-styles">0</div>
           <div class="stat-label">Characters</div>
         </div>
       </div>
       <div class="stat-item">
-        <img src="/icons/created.svg" alt="created"/>
+        <img src="icons/created.svg" alt="created"/>
         <div>
           <div class="stat-num" id="stat-transformations">0</div>
           <div class="stat-label">Created</div>
@@ -1247,13 +1247,13 @@ html, body {
       <!-- Left: camera selector (top) + retake (bottom) -->
       <div class="capture-sidebar-left" style="width:80px;height:720px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:4px 0">
         <div style="display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center">
-          <span class="step-icon" style="width:28px;height:28px;opacity:0.45"><img src="/icons/camera.svg" alt="camera"/></span>
+          <span class="step-icon" style="width:28px;height:28px;opacity:0.45"><img src="icons/camera.svg" alt="camera"/></span>
           <select id="camera-select" onchange="switchCamera(this.value)"
             style="background:#080808;border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.6);font-family:'Mulish',sans-serif;font-size:10px;padding:4px 5px;border-radius:4px;width:78px;outline:none;text-align:center">
           </select>
         </div>
         <button id="btn-retake" onclick="retakePhoto()" style="display:none" class="btn-retake">
-          <span class="step-icon" style="width:28px;height:28px;opacity:0.45"><img src="/icons/refresh-cw.svg" alt="retake"/></span>
+          <span class="step-icon" style="width:28px;height:28px;opacity:0.45"><img src="icons/refresh-cw.svg" alt="retake"/></span>
           Retake
         </button>
       </div>
@@ -1265,7 +1265,7 @@ html, body {
         <img id="capture-preview" alt="captured"/>
         <!-- Camera init placeholder -->
         <div id="camera-placeholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:rgba(255,255,255,0.3)">
-          <span class="step-icon" style="width:38px;height:38px;opacity:0.3"><img src="/icons/camera.svg" alt=""/></span>
+          <span class="step-icon" style="width:38px;height:38px;opacity:0.3"><img src="icons/camera.svg" alt=""/></span>
           <p style="font-family:'Mulish',sans-serif;font-size:12px;letter-spacing:0.1em;text-transform:uppercase">Camera initialising…</p>
         </div>
         <!-- HUD corners -->
@@ -1279,7 +1279,7 @@ html, body {
         <div id="capture-btn-group" style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:10px;align-items:center;white-space:nowrap">
           <button id="btn-capture" onclick="capturePhoto()"
             style="display:flex;align-items:center;gap:7px;background:var(--accent);color:#000;border:none;border-radius:6px;padding:10px 22px;font-family:'Mulish',sans-serif;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:0.1em;cursor:pointer;transition:opacity 0.2s">
-            <span class="step-icon" style="width:16px;height:16px;filter:brightness(0)"><img src="/icons/capture.svg" alt="capture"/></span>
+            <span class="step-icon" style="width:16px;height:16px;filter:brightness(0)"><img src="icons/capture.svg" alt="capture"/></span>
             Capture
           </button>
           <label style="display:none">
@@ -1304,7 +1304,7 @@ html, body {
         </div>
         <button id="btn-continue-capture" onclick="proceedFromCapture()" class="btn-journey" disabled>
           Continue
-          <img class="btn-journey-arrow" src="/icons/continue.svg" alt="continue" style="filter:none;width:90px;height:auto"/>
+          <img class="btn-journey-arrow" src="icons/continue.svg" alt="continue" style="filter:none;width:90px;height:auto"/>
         </button>
       </div>
     </div>
@@ -1345,7 +1345,7 @@ html, body {
     <div style="text-align:center">
       <button id="btn-setup-next" onclick="proceedFromSetup()" class="btn-journey" disabled>
         Continue
-        <img class="btn-journey-arrow" src="/icons/continue.svg" alt="continue" style="filter:none;width:90px;height:auto"/>
+        <img class="btn-journey-arrow" src="icons/continue.svg" alt="continue" style="filter:none;width:90px;height:auto"/>
       </button>
     </div>
   </div>
@@ -1364,7 +1364,7 @@ html, body {
     <div style="text-align:center">
       <button id="btn-lineup-next" onclick="navigateTo('background')" class="btn-journey" disabled>
         Continue
-        <img class="btn-journey-arrow" src="/icons/continue.svg" alt="continue" style="filter:none;width:90px;height:auto"/>
+        <img class="btn-journey-arrow" src="icons/continue.svg" alt="continue" style="filter:none;width:90px;height:auto"/>
       </button>
     </div>
   </div>
@@ -1383,7 +1383,7 @@ html, body {
     <div style="text-align:center">
       <button id="btn-background-next" onclick="navigateTo('transform')" class="btn-journey" disabled>
         Transform
-        <img class="btn-journey-arrow" src="/icons/continue.svg" alt="continue" style="filter:none;width:90px;height:auto"/>
+        <img class="btn-journey-arrow" src="icons/continue.svg" alt="continue" style="filter:none;width:90px;height:auto"/>
       </button>
     </div>
   </div>
@@ -1412,7 +1412,7 @@ html, body {
         <div class="transform-label-chip ai"><span class="chip-dot"></span>AI SYNTHESIZED</div>
         <!-- Shimmer + loading animation (shown while waiting, hidden once the result arrives) -->
         <div id="transform-shimmer" style="position:absolute;inset:0;overflow:hidden;background:#080808;display:flex;align-items:center;justify-content:center">
-          <img src="/animation-while-loading.svg" alt="Loading" style="width:70%;max-width:420px;opacity:0.9;position:relative;z-index:1"/>
+          <img src="animation-while-loading.svg" alt="Loading" style="width:70%;max-width:420px;opacity:0.9;position:relative;z-index:1"/>
           <div style="position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(0,229,255,0.06) 50%,transparent 70%);animation:shimmer 1.8s infinite linear"></div>
           <style>@keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}</style>
         </div>
@@ -2031,3 +2031,4 @@ if (container) {
 <script src="app.js?v=14"></script>
 </body>
 </html>
+

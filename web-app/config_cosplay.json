@@ -1,0 +1,308 @@
+{
+  "_comment": "Cosplay/party kiosk config for google/nano-banana-2. 'image' mode themes (singapore_ghost, fries) pair the user's photo with a costume reference_image under imgs/cosplay/. 'prompt' mode themes (fantasy_halloween) use only the character's descriptive prompt text on the user's own photo. Server prepends a shared identity-preservation guard to every character before calling the model.",
+  "identity_guard": "Keep the exact face, facial features, skin tone, and identity of the person in the photo completely unchanged — do not alter their face in any way. Only change their clothing, costume, hair styling, and add the described props or accessories. Do not add any other people, text, watermarks, or logos.",
+  "image_mode_instruction": "This is a complete clothing and costume reference edit. Apply the full outfit, costume pieces, and accessories shown in the second reference image to the person in the first photo — same garments, same colors, same materials. Frame in a full-body or three-quarter view showing the entire costume from top to bottom, completely visible without cropping or cutting off any part of the costume. Only the costume changes; the person's face, skin tone, and identity stay the same.",
+  "image_mode_instruction_retry": "Edit the photo so the person is wearing the complete full outfit shown in the reference image. Show the entire costume from top to bottom in a full three-quarter or full-body view without cropping.",
+  "harmonize_prompt": "Blend everyone in this photo into one cohesive, naturally-posed group scene: unify the lighting direction, color grading, and shadow softness across all people and the background so it looks like one naturally photographed group photo. You may adjust each person's pose, stance, and body angle so the group looks like they are standing together naturally — angled slightly toward each other, sharing the same ground plane and perspective — instead of independently posed cutouts. Keep everyone fully visible and inside the frame: do not crop, cut off, or trim any part of any person, and keep the whole group centred within the frame with even space on both sides, not pushed to one edge. Do not change any person's face, costume, or identity. Do not add or remove anyone. Do not add any text or watermarks.",
+  "harmonize_prompt_single": "Blend this person naturally into the background scene: unify the lighting direction, color grading, and shadow softness between the person and the background so it looks like one naturally photographed scene, as if they were truly standing there. Keep the person fully visible and inside the frame: do not crop, cut off, or trim any part of them, and keep them centred within the frame with even space on both sides. Keep the original expression of the person. Do not change their face, costume, pose, or identity. This photo has exactly one person — do not add any other people, figures, or reflections of additional people. Do not add any text or watermarks.",
+  "themes": {
+    "singapore_ghost": {
+      "key": "singapore_ghost",
+      "display_name": "Singapore Ghost",
+      "mode": "image",
+      "icon": "👻",
+      "tagline": "Spooky spirits from local folklore",
+      "description": "Iconic Southeast Asian ghosts and spectral legends — step into Singapore's supernatural folklore.",
+      "image_mode_instruction": "Transform the person to wear the complete traditional ghostly outfit and costume shown in the second reference image. Show the entire costume from head to toe in a full-body or three-quarter view, with the full robes, garments, and accessories completely visible and not cropped. Only the costume changes; the person's face and identity stay the same.",
+      "image_mode_instruction_retry": "Dress the person in the complete full costume shown in the reference image. Ensure the entire outfit and garments are fully visible from head to toe in a three-quarter or full-body framing without cropping."
+    },
+    "fantasy_halloween": {
+      "key": "fantasy_halloween",
+      "display_name": "Fantasy Halloween",
+      "mode": "prompt",
+      "icon": "🎃",
+      "tagline": "Classic creatures and dark monsters",
+      "description": "Gothic horror legends, dark witches, vampires, and monsters of All Hallows' Eve."
+    },
+    "fries": {
+      "key": "fries",
+      "display_name": "Fries",
+      "mode": "image",
+      "icon": "🍟",
+      "tagline": "Crispy, golden, and loaded with style",
+      "description": "Fun and stylish French Fries outfits — transform into a crispy, golden fry star.",
+      "image_mode_instruction": "Transform the person to wear the complete full French fries mascot costume shown in the second reference image: a giant wearable red French fry container box with the printed variety label and oversized golden fries bursting out from the top. The shot must show the full costume from top to bottom (from the golden fries above the shoulders down to the bottom of the red fry box and legs) in a full-body or three-quarter view, ensuring the entire fry box costume is fully visible and not cropped. Only the costume changes; the person's face and identity stay the same.",
+      "image_mode_instruction_retry": "Transform the person to wear the full French fries box mascot costume shown in the reference image. Show the complete red fry box container and all golden fries in a full three-quarter view so the entire costume is visible."
+    }
+  },
+  "theme_order": [
+    "singapore_ghost",
+    "fantasy_halloween",
+    "fries"
+  ],
+  "characters": {
+    "ghost_m_jiangshi": {
+      "key": "ghost_m_jiangshi",
+      "theme_key": "singapore_ghost",
+      "name": "Jiangshi",
+      "source": "Singapore / Chinese Folklore",
+      "gender": "male",
+      "description": "The hopping vampire draped in Qing dynasty official robes and talisman.",
+      "prompt": "Wear the complete full Qing dynasty hopping vampire official robes, mandarin necklace, imperial talisman on hat, and dark boots. Full-body or three-quarter view showing the entire costume from head to toe.",
+      "reference_image": "Singapore-Ghost/Jiangshi.png"
+    },
+    "ghost_m_pocong": {
+      "key": "ghost_m_pocong",
+      "theme_key": "singapore_ghost",
+      "name": "Pocong",
+      "source": "Singapore / Malay Folklore",
+      "gender": "male",
+      "description": "The spectral shroud ghost bound in traditional white burial cloth.",
+      "prompt": "Wear the complete full traditional white shroud burial cloth tied at the head and feet. Full-body view showing the entire wrapped shroud costume from top to bottom.",
+      "reference_image": "Singapore-Ghost/Pocong.png"
+    },
+    "ghost_f_pontianak": {
+      "key": "ghost_f_pontianak",
+      "theme_key": "singapore_ghost",
+      "name": "Pontianak",
+      "source": "Singapore / Malay Folklore",
+      "gender": "female",
+      "description": "The vengeful female spirit in flowing white dress with long flowing black hair.",
+      "prompt": "Wear the complete full flowing white spectral dress and long flowing black hair. Full-body or three-quarter view showing the entire white gown from shoulders to floor.",
+      "reference_image": "Singapore-Ghost/Pontianak.png"
+    },
+    "ghost_f_shuigui": {
+      "key": "ghost_f_shuigui",
+      "theme_key": "singapore_ghost",
+      "name": "ShuiGui",
+      "source": "Singapore Folklore",
+      "gender": "female",
+      "description": "The eerie water ghost emerging from dark misty depths with water-drenched garments.",
+      "prompt": "Wear the complete drenched misty water-spirit garments and ghostly robes. Full-body or three-quarter view showing the entire costume completely visible.",
+      "reference_image": "Singapore-Ghost/ShuiGui.png"
+    },
+    "halloween_m_frankenstein": {
+      "key": "halloween_m_frankenstein",
+      "theme_key": "fantasy_halloween",
+      "name": "Frankenstein",
+      "gender": "male",
+      "description": "The colossal reanimated monster with stitched flesh and weathered dark suit.",
+      "prompt": "Transform into Frankenstein's Monster in a classic gothic Halloween style: full-body or wide three-quarter view showing the entire costume from head to boots, completely visible without cropping. Tall muscular build, prominent neck electrodes and metallic bolts, visible stitched surgical seams across the forehead and temples, pale greenish-tinged skin, dark unruly hair, wearing an oversized weathered dark tweed blazer over a distressed knit shirt, heavy dark trousers and bulky industrial boots, standing inside a gothic laboratory with crackling Jacob's ladders, glowing electrical coils, and stormy lightning flashing through a tall arched window, imposing iconic monster silhouette, keep the person's face recognisable."
+    },
+    "halloween_f_frankenstein": {
+      "key": "halloween_f_frankenstein",
+      "theme_key": "fantasy_halloween",
+      "name": "Bride of Frankenstein",
+      "gender": "female",
+      "description": "The iconic gothic monster bride with lightning-streaked hair and wrapped gown.",
+      "prompt": "Transform into the Bride of Frankenstein in an iconic gothic Halloween horror style: full-body or wide three-quarter view showing the entire costume from head to toe, completely visible without cropping. Towering beehive hair with iconic white lightning streaks on the sides, subtle surgical stitches along the neckline, wearing an elegant floor-length draped white bandage gown with high collar and wrapped sleeves, standing in a gothic laboratory surrounded by glowing electric coils and gothic candelabras under a stormy moonlit sky, dramatic spooky monster silhouette, keep the person's face recognisable."
+    },
+    "halloween_m_plague_doctor": {
+      "key": "halloween_m_plague_doctor",
+      "theme_key": "fantasy_halloween",
+      "name": "Plague Doctor",
+      "gender": "male",
+      "description": "The eerie physician in a long waxed-leather coat, wide-brimmed hat, and vintage lantern.",
+      "prompt": "Transform into a gothic Renaissance Plague Doctor: full-body or wide three-quarter view showing the entire costume from head to boots, completely visible without cropping. Wearing a heavy dark waxed-leather trench coat with a shoulder cowl, wide-brimmed dark leather top hat, black leather gloves holding a glowing vintage brass lantern and a silver-tipped wooden cane, dark trousers and leather boots, the iconic long curved beaked plague doctor mask pushed up onto the hat or resting to the side so the person's face and eyes remain clearly visible and recognisable, standing on a cobblestone Victorian street shrouded in eerie swirling fog and gaslit lampposts, dark atmospheric Halloween mood."
+    },
+    "halloween_f_plague_doctor": {
+      "key": "halloween_f_plague_doctor",
+      "theme_key": "fantasy_halloween",
+      "name": "Plague Doctor",
+      "gender": "female",
+      "description": "The enigmatic healer in tailored leather robes, wide-brimmed hat, and glowing brass lantern.",
+      "prompt": "Transform into a gothic Renaissance Plague Doctor: full-body or wide three-quarter view showing the entire costume from head to boots, completely visible without cropping. Wearing a tailored dark waxed-leather coat with an elegant shoulder cowl, wide-brimmed dark leather top hat, dark gloves holding a glowing brass lantern and cane, dark trousers and riding boots, the iconic beaked plague doctor mask tipped back onto the hat so the person's face and eyes remain clearly visible and recognisable, standing in an eerie cobblestone alley veiled in Victorian fog and glowing street lamps, mysterious Halloween mood."
+    },
+    "halloween_m_straw_man": {
+      "key": "halloween_m_straw_man",
+      "theme_key": "fantasy_halloween",
+      "name": "Straw Man",
+      "gender": "male",
+      "description": "The sinister scarecrow in patchwork burlap, straw tufts, rope belt, and crooked hat.",
+      "prompt": "Transform into a spooky Straw Man scarecrow in a dark Halloween horror style: full-body or wide three-quarter view showing the entire costume from head to boots, completely visible without cropping. Wearing a distressed rustic patchwork burlap jacket and weathered denim overalls with straw tufts bursting out of the cuffs, collar, and pockets, a tied rope belt, thick leather work boots, a crooked pointed burlap hat with straw peeking out, holding a rustic carved wooden staff or pitchfork, standing in a misty haunted autumn cornfield with glowing jack-o'-lanterns at dusk under an ominous full moon, spooky Halloween scarecrow silhouette, keep the person's face recognisable."
+    },
+    "halloween_f_straw_man": {
+      "key": "halloween_f_straw_man",
+      "theme_key": "fantasy_halloween",
+      "name": "Straw Maiden",
+      "gender": "female",
+      "description": "The gothic autumn scarecrow in rustic burlap pinafore dress and straw accents.",
+      "prompt": "Transform into a gothic Straw Maiden scarecrow in an autumn Halloween horror style: full-body or wide three-quarter view showing the entire costume from head to boots, completely visible without cropping. Wearing a rustic patchwork burlap-and-plaid pinafore dress with frayed hem and straw tufts accenting the cuffs and waistband, a rope belt, distressed dark leather boots, a floppy wide-brimmed straw hat adorned with dark autumn leaves and mini pumpkin, standing in a foggy moonlit pumpkin patch and cornfield with glowing jack-o'-lanterns, whimsical and spooky Halloween aesthetic, keep the person's face recognisable."
+    },
+    "halloween_m_dark_witch": {
+      "key": "halloween_m_dark_witch",
+      "theme_key": "fantasy_halloween",
+      "name": "Dark Warlock",
+      "gender": "male",
+      "description": "The shadowy warlock in hooded velvet robes holding a glowing amethyst arcane staff.",
+      "prompt": "Transform into a powerful dark warlock in a gothic fantasy Halloween style: full-body or wide three-quarter view showing the entire costume from head to boots, completely visible without cropping. Wearing an ornate hooded midnight-purple and black velvet robe with silver arcane runes embroidered along the hem, a silver-buckled leather belt with potion vials, dark leather boots, holding an ancient glowing gnarled wooden staff crowned with an amethyst crystal, crackling violet magic swirling around the hands, standing in a moonlit misty cemetery with ancient mossy crypts and floating jack-o'-lanterns, mystical Halloween atmosphere, keep the face recognisable."
+    },
+    "halloween_f_dark_witch": {
+      "key": "halloween_f_dark_witch",
+      "theme_key": "fantasy_halloween",
+      "name": "Dark Witch",
+      "gender": "female",
+      "description": "The gothic sorceress in corseted velvet robes with a pointed brimmed hat and glowing spellbook.",
+      "prompt": "Transform into a powerful dark witch in a gothic fantasy Halloween style: full-body or wide three-quarter view showing the entire costume from head to boots, completely visible without cropping. An elegant corseted black-and-midnight-purple velvet gown with sheer lace sleeves, celestial silver embroidery, and floor-sweeping hem, an ornate pointed witch hat with sheer veil and crescent moon talisman, dark flowing hair, glowing arcane purple and violet magical energy swirling around the hands, holding a carved wooden wand or ancient spellbook, standing in a moonlit haunted forest or misty graveyard with floating jack-o'-lanterns and twisted dead trees, mystical and alluring gothic Halloween atmosphere, keep the face recognisable."
+    },
+    "halloween_m_vampire": {
+      "key": "halloween_m_vampire",
+      "theme_key": "fantasy_halloween",
+      "name": "Vampire Count",
+      "gender": "male",
+      "description": "The aristocratic vampire lord in high-collared velvet cape and Victorian gothic attire.",
+      "prompt": "Transform into an aristocratic vampire lord in a dark gothic style: full-body or wide three-quarter view showing the entire costume from head to boots, completely visible without cropping. A high-collared black velvet cape lined with deep crimson silk, an ornate brocade waistcoat with silver pocket watch chain, ruffled black cravat with a ruby brooch, tailored black trousers and polished boots, subtle pale porcelain complexion and delicate sharp fangs, dark styled hair, holding a crystal goblet or resting one hand on a silver cane, standing in a gothic castle grand hall with candelabras, velvet drapes, and a full moon shining through high arched gothic windows, seductive and menacing aristocratic presence, keep the face recognisable."
+    },
+    "halloween_f_vampire": {
+      "key": "halloween_f_vampire",
+      "theme_key": "fantasy_halloween",
+      "name": "Vampire Countess",
+      "gender": "female",
+      "description": "The regal vampire queen in crimson velvet and black lace Victorian ballgown.",
+      "prompt": "Transform into an aristocratic vampire countess in a dark gothic style: full-body or wide three-quarter view showing the entire costume from head to toe, completely visible without cropping. An opulent Victorian ballgown in deep crimson velvet and black lace with a corseted bodice and high standing Elizabethan collar, sheer lace bell sleeves, an ornate ruby choker necklace, subtle pale porcelain complexion with delicate fangs, elegant styled dark hair, standing in a candlelit gothic cathedral hall with arched stained glass windows under a blood-red harvest moon, elegant and menacing vampire queen presence, keep the face recognisable."
+    },
+    "halloween_m_zombie": {
+      "key": "halloween_m_zombie",
+      "theme_key": "fantasy_halloween",
+      "name": "Zombie Walker",
+      "gender": "male",
+      "description": "The reanimated gentleman in distressed vintage suit and tattered trench coat.",
+      "prompt": "Transform into a reanimated gothic zombie walker in a stylish Halloween horror aesthetic: full-body or wide three-quarter view showing the entire costume from head to boots, completely visible without cropping. Wearing a distressed, weathered vintage tweed three-piece suit and tattered trench coat with frayed hemlines, loosened vintage necktie, scuffed heavy dark boots, pale cool-toned ashen complexion with dark smoky eyes and subtle undead contouring, disheveled windswept hair, standing in an overgrown haunted Victorian graveyard with weathered tombstones and ground mist under an eerie full moon, spooky Halloween aesthetic without excessive gore, keep the person's face recognisable."
+    },
+    "halloween_f_zombie": {
+      "key": "halloween_f_zombie",
+      "theme_key": "fantasy_halloween",
+      "name": "Zombie",
+      "gender": "female",
+      "description": "The reanimated undead in distressed vintage garments amidst a haunting graveyard.",
+      "prompt": "Transform into a reanimated gothic zombie in a stylish Halloween horror aesthetic: full-body or wide three-quarter view showing the entire costume from head to boots, completely visible without cropping. Distressed and tattered vintage lace and dark linen dress with frayed edges and subtle faux-dirt distressing, dark stockings and lace-up boots, pale cool-toned ashen complexion with dark smoky eyes and slight undead contouring, disheveled windswept hair, standing amidst a haunted overgrown cemetery with weathered headstones, glowing jack-o'-lanterns, and misty ground fog under an eerie full moon, dramatic spooky Halloween horror style without excessive gore, keep the person's face fully recognisable."
+    },
+    "halloween_m_clown": {
+      "key": "halloween_m_clown",
+      "theme_key": "fantasy_halloween",
+      "name": "Creepy Clown",
+      "gender": "male",
+      "description": "The sinister circus clown in vintage ruffled striped jumpsuit and oversized clown shoes.",
+      "prompt": "Transform into a classic sinister Halloween circus clown in a dark vintage horror aesthetic: full-body or wide three-quarter view showing the entire costume from head to oversized clown boots, completely visible without cropping. Wearing a vintage ruffled black-and-orange striped silk clown jumpsuit with oversized black pompoms down the front, a wide exaggerated pleated neck ruff collar, ruffled wrist and ankle cuffs, distressed oversized two-tone clown shoes, subtle vintage clown makeup accentuating the eyes and smile while keeping the person's face recognisable, wild tousled hair with a tiny tilted top hat, standing under a dilapidated haunted carnival circus tent with flickering string bulbs and swirling fog, spooky Halloween clown silhouette."
+    },
+    "halloween_f_clown": {
+      "key": "halloween_f_clown",
+      "theme_key": "fantasy_halloween",
+      "name": "Gothic Clown",
+      "gender": "female",
+      "description": "The dark harlequin clown in diamond-patterned corseted dress with tiered neck ruff.",
+      "prompt": "Transform into a gothic circus clown harlequin in a vintage Halloween horror aesthetic: full-body or wide three-quarter view showing the entire costume from head to boots, completely visible without cropping. Wearing a dramatic monochrome black-and-crimson diamond-patterned harlequin corset dress with a multi-layered ruffled tulle skirt, an exaggerated tiered neck ruff, mismatched striped tights, Victorian lace-up boots, subtle theatrical vintage clown eye makeup while keeping the person's face recognisable, dark styled hair topped with a mini jester cap, standing on a dimly lit spooky carnival boardwalk with abandoned funhouse games and eerie purple haze under a full moon, dark whimsical Halloween clown silhouette."
+    },
+    "fries_m_curly": {
+      "key": "fries_m_curly",
+      "theme_key": "fries",
+      "name": "Curly Fries",
+      "source": "RVI Fries",
+      "gender": "male",
+      "description": "Fun red fry-box costume overflowing with seasoned spiral curly fries.",
+      "prompt": "Wear the complete full Curly Fries costume: the large wearable red fry box displaying 'CURLY FRIES' across the front oval label, with seasoned spiral curly fries bursting out around the shoulders. Full three-quarter or full-body view showing the entire fry box costume.",
+      "reference_image": "RVI-Fries/FriesBoy-1.png"
+    },
+    "fries_m_regular": {
+      "key": "fries_m_regular",
+      "theme_key": "fries",
+      "name": "Regular Fries",
+      "source": "RVI Fries",
+      "gender": "male",
+      "description": "Classic red fry-box costume packed with golden straight-cut fries.",
+      "prompt": "Wear the complete full Regular Fries costume: the large wearable red fry box displaying 'REGULAR FRIES' across the front oval label, with golden straight-cut fries bursting out around the shoulders. Full three-quarter or full-body view showing the entire fry box costume.",
+      "reference_image": "RVI-Fries/FriesBoy-2.png"
+    },
+    "fries_m_crinkle": {
+      "key": "fries_m_crinkle",
+      "theme_key": "fries",
+      "name": "Crinkle Cut Fries",
+      "source": "RVI Fries",
+      "gender": "male",
+      "description": "Bold red fry-box costume filled with crispy wavy crinkle cut fries.",
+      "prompt": "Wear the complete full Crinkle Cut Fries costume: the large wearable red fry box displaying 'CRINKLE CUT FRIES' across the front oval label, with crispy wavy crinkle cut fries bursting out around the shoulders. Full three-quarter or full-body view showing the entire fry box costume.",
+      "reference_image": "RVI-Fries/FriesBoy-3.png"
+    },
+    "fries_f_waffle": {
+      "key": "fries_f_waffle",
+      "theme_key": "fries",
+      "name": "Waffle Fries",
+      "source": "RVI Fries",
+      "gender": "female",
+      "description": "Chic red fry-box costume bursting with golden criss-cross waffle fries.",
+      "prompt": "Wear the complete full Waffle Fries costume: the large wearable red fry box displaying 'WAFFLE FRIES' across the front oval label, with golden criss-cross waffle fries bursting out around the shoulders. Full three-quarter or full-body view showing the entire fry box costume.",
+      "reference_image": "RVI-Fries/FriesGirl-1.png"
+    },
+    "fries_f_tater_tots": {
+      "key": "fries_f_tater_tots",
+      "theme_key": "fries",
+      "name": "Tater Tots",
+      "source": "RVI Fries",
+      "gender": "female",
+      "description": "Playful red fry-box costume loaded with golden bite-sized crunchy tater tots.",
+      "prompt": "Wear the complete full Tater Tots costume: the large wearable red fry box displaying 'TATER TOTS' across the front oval label, with golden crunchy tater tots bursting out around the shoulders. Full three-quarter or full-body view showing the entire fry box costume.",
+      "reference_image": "RVI-Fries/FriesGirl-2.png"
+    },
+    "fries_f_potato_wedges": {
+      "key": "fries_f_potato_wedges",
+      "theme_key": "fries",
+      "name": "Potato Wedges",
+      "source": "RVI Fries",
+      "gender": "female",
+      "description": "Rustic red fry-box costume piled high with seasoned thick-cut potato wedges.",
+      "prompt": "Wear the complete full Potato Wedges costume: the large wearable red fry box displaying 'POTATO WEDGES' across the front oval label, with thick seasoned potato wedges bursting out around the shoulders. Full three-quarter or full-body view showing the entire fry box costume.",
+      "reference_image": "RVI-Fries/FriesGirl-3.png"
+    }
+  },
+  "overlay": "overlays/halloween-rvi.png",
+  "_all_backgrounds": [
+    "backgroundpicts-hallo/232458704_m.png",
+    "backgroundpicts-hallo/248025286_m.png",
+    "backgroundpicts-hallo/248973310_m.png",
+    "backgroundpicts-hallo/259633178_m.png",
+    "backgroundpicts-hallo/275588347_m.png",
+    "backgroundpicts-hallo/276301964_m.png",
+    "backgroundpicts-hallo/306105556_m.png",
+    "backgroundpicts-hallo/318676790_m.png",
+    "backgroundpicts-hallo/318678010_m.png"
+  ],
+  "backgrounds": {
+    "singapore_ghost": [
+      "backgroundpicts-hallo/232458704_m.png",
+      "backgroundpicts-hallo/248025286_m.png",
+      "backgroundpicts-hallo/248973310_m.png",
+      "backgroundpicts-hallo/259633178_m.png",
+      "backgroundpicts-hallo/275588347_m.png",
+      "backgroundpicts-hallo/276301964_m.png",
+      "backgroundpicts-hallo/306105556_m.png",
+      "backgroundpicts-hallo/318676790_m.png",
+      "backgroundpicts-hallo/318678010_m.png"
+    ],
+    "fantasy_halloween": [
+      "backgroundpicts-hallo/232458704_m.png",
+      "backgroundpicts-hallo/248025286_m.png",
+      "backgroundpicts-hallo/248973310_m.png",
+      "backgroundpicts-hallo/259633178_m.png",
+      "backgroundpicts-hallo/275588347_m.png",
+      "backgroundpicts-hallo/276301964_m.png",
+      "backgroundpicts-hallo/306105556_m.png",
+      "backgroundpicts-hallo/318676790_m.png",
+      "backgroundpicts-hallo/318678010_m.png"
+    ],
+    "fries": [
+      "backgroundpicts-hallo/232458704_m.png",
+      "backgroundpicts-hallo/248025286_m.png",
+      "backgroundpicts-hallo/248973310_m.png",
+      "backgroundpicts-hallo/259633178_m.png",
+      "backgroundpicts-hallo/275588347_m.png",
+      "backgroundpicts-hallo/276301964_m.png",
+      "backgroundpicts-hallo/306105556_m.png",
+      "backgroundpicts-hallo/318676790_m.png",
+      "backgroundpicts-hallo/318678010_m.png"
+    ]
+  },
+  "harmonize_prompt_1": "This photo contains EXACTLY ONE (1) person. Harmonize and blend this single person naturally into the background scene with unified lighting direction, color grading, and shadow softness between the person and the background so it looks like one naturally photographed scene. Keep the person fully visible and inside the frame: do not crop, cut off, or trim any part of them, and keep them centred within the frame with even space on both sides. Keep the original expression of the person. Do not change their face, costume, pose, or identity. This photo has exactly one person — do not add any second person, extra figures, background crowd, or reflections of additional people. Do not add any text or watermarks.",
+  "harmonize_prompt_2": "This photo contains EXACTLY TWO (2) people. Blend these exactly two people into one cohesive, naturally-posed group photo: unify the lighting direction, color grading, and shadow softness across both people and the background so it looks like one naturally photographed duo. Keep BOTH people fully visible, distinct, and inside the frame: do not crop, cut off, or trim any part of either person, and keep the pair centred within the frame. Do not change either person's face, costume, or identity. This photo has EXACTLY TWO people in total — do not add any third person, bystanders, background crowd, or extra figures. Do not merge or omit either person. Do not add any text or watermarks.",
+  "harmonize_prompt_3": "This photo contains EXACTLY THREE (3) people. Blend these exactly three people into one cohesive, naturally-posed group photo: unify the lighting direction, color grading, and shadow softness across all three people and the background so it looks like one naturally photographed group photo. Keep ALL THREE people fully visible, distinct, and inside the frame: do not crop, cut off, or trim any part of any person, and keep the group centred within the frame. Do not change any person's face, costume, or identity. This photo has EXACTLY THREE people in total — do not add any fourth person, bystanders, background crowd, or extra figures. Do not merge or omit any person. Do not add any text or watermarks.",
+  "harmonize_prompt_4": "This photo contains EXACTLY FOUR (4) people. Blend these exactly four people into one cohesive, naturally-posed group photo: unify the lighting direction, color grading, and shadow softness across all four people and the background so it looks like one naturally photographed group photo. Keep ALL FOUR people fully visible, distinct, and inside the frame: do not crop, cut off, or trim any part of any person, and keep the group centred within the frame. Do not change any person's face, costume, or identity. This photo has EXACTLY FOUR people in total — do not add any fifth person, bystanders, background crowd, or extra figures. Do not merge or omit any person. Do not add any text or watermarks."
+}

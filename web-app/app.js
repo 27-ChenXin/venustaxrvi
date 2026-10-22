@@ -17,6 +17,10 @@ const ADMIN_TOKEN_KEY  = 'lh_admin_token';
 const USER_KEY         = 'lh_user';        // { name, replicateKey, expiresAt } stored in localStorage
 const USER_SESSION_TTL = 24 * 60 * 60 * 1000; // 24 hours in ms
 
+// Backend API base URL: defaults to empty string for same-origin (local/Docker),
+// or reads localStorage 'lh_api_base' when running on GitHub Pages / custom domain
+const API_BASE = localStorage.getItem('lh_api_base') || '';
+
 /** Singleton app state */
 const AppState = {
   currentPage:        'home',
@@ -60,12 +64,12 @@ const AppState = {
 
 // Journey step definitions
 const JOURNEY_STEPS = [
-  { key: 'setup',      num: '01', label: 'setup',      icon: '/icons/destination.svg' },
-  { key: 'capture',    num: '02', label: 'capture',    icon: '/icons/capture.svg'     },
-  { key: 'lineup',     num: '03', label: 'lineup',     icon: '/icons/styles.svg'      },
-  { key: 'background', num: '04', label: 'background', icon: '/icons/countries.svg'   },
-  { key: 'transform',  num: '05', label: 'transform',  icon: '/icons/transform.svg'   },
-  { key: 'result',     num: '06', label: 'result',     icon: '/icons/result.svg'      },
+  { key: 'setup',      num: '01', label: 'setup',      icon: 'icons/destination.svg' },
+  { key: 'capture',    num: '02', label: 'capture',    icon: 'icons/capture.svg'     },
+  { key: 'lineup',     num: '03', label: 'lineup',     icon: 'icons/styles.svg'      },
+  { key: 'background', num: '04', label: 'background', icon: 'icons/countries.svg'   },
+  { key: 'transform',  num: '05', label: 'transform',  icon: 'icons/transform.svg'   },
+  { key: 'result',     num: '06', label: 'result',     icon: 'icons/result.svg'      },
 ];
 
 function isStepUnlocked(stepKey) {
@@ -157,20 +161,36 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function fetchCosplayConfig() {
+  // 1. Try backend API first
   try {
-    const res = await fetch('/config');
+    const res = await fetch(`${API_BASE}/config`);
     if (res.ok) {
       AppState.cosplayConfig = await res.json();
       console.info(
-        '[LH] Cosplay config loaded:',
+        '[LH] Cosplay config loaded from API:',
         Object.keys(AppState.cosplayConfig.themes || {}).length, 'themes,',
         Object.keys(AppState.cosplayConfig.characters || {}).length, 'characters'
       );
-    } else {
-      console.warn('[LH] /config returned', res.status);
+      return;
+    }
+  } catch (apiErr) {
+    console.warn('[LH] API config fetch failed, attempting local fallback:', apiErr.message);
+  }
+
+  // 2. Fallback to local static JSON (for GitHub Pages / standalone preview)
+  try {
+    const fallbackRes = await fetch('config_cosplay.json');
+    if (fallbackRes.ok) {
+      AppState.cosplayConfig = await fallbackRes.json();
+      console.info(
+        '[LH] Cosplay config loaded from local static JSON:',
+        Object.keys(AppState.cosplayConfig.themes || {}).length, 'themes,',
+        Object.keys(AppState.cosplayConfig.characters || {}).length, 'characters'
+      );
+      return;
     }
   } catch (err) {
-    console.warn('[LH] Could not load cosplay config:', err.message);
+    console.warn('[LH] Could not load static cosplay config:', err.message);
   }
 }
 
@@ -180,7 +200,7 @@ async function fetchCosplayConfig() {
 
 async function fetchPublicSettings() {
   try {
-    const res = await fetch('/settings');
+    const res = await fetch(`${API_BASE}/settings`);
     if (res.ok) {
       const data = await res.json();
       AppState.galleryPublic       = data.gallery_public !== false;
@@ -332,7 +352,7 @@ async function openSettingsModal() {
   if (!AppState.isAdmin) return;
   // Load current settings from server
   try {
-    const res = await fetch(`/admin/settings?admin_token=${AppState.adminToken}`);
+    const res = await fetch(`${API_BASE}/admin/settings?admin_token=${AppState.adminToken}`);
     if (res.status === 401) {
       _handleStaleAdminToken();
       return;
@@ -410,7 +430,7 @@ async function saveAdminSettings() {
   if (keyVal !== null && keyVal !== '') payload.replicate_token = keyVal;
 
   try {
-    const res = await fetch(`/admin/settings?admin_token=${AppState.adminToken}`, {
+    const res = await fetch(`${API_BASE}/admin/settings?admin_token=${AppState.adminToken}`, {
       method:  'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(payload),
@@ -448,7 +468,7 @@ async function saveAdminSettings() {
 
 function downloadRetrievalLog() {
   if (!AppState.adminToken) return;
-  const url = `/admin/retrieval-log?admin_token=${encodeURIComponent(AppState.adminToken)}`;
+  const url = `${API_BASE}/admin/retrieval-log?admin_token=${encodeURIComponent(AppState.adminToken)}`;
   const a = document.createElement('a');
   a.href = url;
   a.download = 'retrieval-log.csv';
@@ -461,7 +481,7 @@ async function resetRetrievalLog() {
   if (!AppState.adminToken) return;
   if (!window.confirm('Delete the entire retrieval log? This cannot be undone.')) return;
   try {
-    const res = await fetch(`/admin/retrieval-log?admin_token=${encodeURIComponent(AppState.adminToken)}`, {
+    const res = await fetch(`${API_BASE}/admin/retrieval-log?admin_token=${encodeURIComponent(AppState.adminToken)}`, {
       method: 'DELETE',
     });
     if (res.status === 401) { _handleStaleAdminToken(); return; }
@@ -602,15 +622,15 @@ function showPage(pageId) {
 // ══════════════════════════════════════════════════════════════════
 
 const HOME_BG_IMAGES = [
-  '/imgs/cosplay/backgroundpicts-hallo/232458704_m.png',
-  '/imgs/cosplay/backgroundpicts-hallo/248025286_m.png',
-  '/imgs/cosplay/backgroundpicts-hallo/248973310_m.png',
-  '/imgs/cosplay/backgroundpicts-hallo/259633178_m.png',
-  '/imgs/cosplay/backgroundpicts-hallo/275588347_m.png',
-  '/imgs/cosplay/backgroundpicts-hallo/276301964_m.png',
-  '/imgs/cosplay/backgroundpicts-hallo/306105556_m.png',
-  '/imgs/cosplay/backgroundpicts-hallo/318676790_m.png',
-  '/imgs/cosplay/backgroundpicts-hallo/318678010_m.png',
+  'imgs/cosplay/backgroundpicts-hallo/232458704_m.png',
+  'imgs/cosplay/backgroundpicts-hallo/248025286_m.png',
+  'imgs/cosplay/backgroundpicts-hallo/248973310_m.png',
+  'imgs/cosplay/backgroundpicts-hallo/259633178_m.png',
+  'imgs/cosplay/backgroundpicts-hallo/275588347_m.png',
+  'imgs/cosplay/backgroundpicts-hallo/276301964_m.png',
+  'imgs/cosplay/backgroundpicts-hallo/306105556_m.png',
+  'imgs/cosplay/backgroundpicts-hallo/318676790_m.png',
+  'imgs/cosplay/backgroundpicts-hallo/318678010_m.png',
 ];
 let heroCycleIdx = 0;
 
@@ -626,11 +646,11 @@ function startHeroCycle() {
 async function loadHomeStats() {
   try {
     const [galleryRes, configRes] = await Promise.all([
-      fetch('/gallery?limit=1'),
-      fetch('/config'),
+      fetch(`${API_BASE}/gallery/count`).catch(() => null),
+      fetch(`${API_BASE}/config`).catch(() => null),
     ]);
-    const galleryData = await galleryRes.json();
-    const configData  = await configRes.json();
+    const galleryData = galleryRes && galleryRes.ok ? await galleryRes.json() : { total: 0 };
+    const configData  = configRes && configRes.ok ? await configRes.json() : (AppState.cosplayConfig || {});
 
     const totalEl = document.getElementById('stat-transformations');
     if (totalEl) totalEl.textContent = galleryData.total > 0 ? galleryData.total.toLocaleString() : '0';
@@ -1105,7 +1125,7 @@ async function proceedFromCapture() {
     formData.append('image', blob, 'capture.jpg');
 
     console.info('[LH] Sending POST /upload ...');
-    const res = await fetch('/upload', { method: 'POST', body: formData });
+    const res = await fetch(`${API_BASE}/upload`, { method: 'POST', body: formData });
     console.info('[LH] /upload response status:', res.status);
 
     if (!res.ok) {
@@ -1121,7 +1141,7 @@ async function proceedFromCapture() {
 
     // Fire gender analysis in background — resolved before the lineup page needs it.
     const analyzeToken = getUserReplicateKey() || '';
-    const analyzeUrl = `/analyze-person?upload_id=${data.upload_id}` +
+    const analyzeUrl = `${API_BASE}/analyze-person?upload_id=${data.upload_id}` +
       (analyzeToken ? `&user_replicate_token=${encodeURIComponent(analyzeToken)}` : '');
     AppState.persons[idx].genderPromise = fetch(analyzeUrl, { method: 'POST' })
       .then(r => r.json())
@@ -1137,17 +1157,12 @@ async function proceedFromCapture() {
       });
 
   } catch (err) {
-    console.error('[LH] Upload failed:', err);
-    if (btn) { btn.disabled = false; btn.innerHTML = origLabel; }
-    const errDiv = document.getElementById('capture-error');
-    if (errDiv) {
-      errDiv.textContent = `Upload failed: ${err.message}`;
-      errDiv.classList.remove('hidden');
-      setTimeout(() => errDiv.classList.add('hidden'), 6000);
-    } else {
-      alert(`Upload failed: ${err.message}`);
-    }
-    return;
+    console.warn('[LH] Upload to backend failed (running in offline/static mode):', err.message);
+    const idx = AppState.currentCaptureIndex;
+    AppState.persons[idx].uploadId = 'local-upload-' + Date.now();
+    AppState.persons[idx].dataUrl  = AppState.capturedDataUrl;
+    AppState.persons[idx].gender   = Math.random() < 0.5 ? 'male' : 'female';
+    AppState.persons[idx].genderPromise = Promise.resolve({ gender: AppState.persons[idx].gender, status: 'offline' });
   }
 
   if (btn) { btn.disabled = false; btn.innerHTML = origLabel; }
@@ -1178,6 +1193,21 @@ function dataUrlToBlob(dataUrl) {
 // 7.  LINEUP PAGE  (character assignment + reroll)
 // ══════════════════════════════════════════════════════════════════
 
+function pickLocalCharacter(themeKey, gender, excludeKeys = []) {
+  if (!AppState.cosplayConfig?.characters) return null;
+  const exclude = new Set(excludeKeys);
+  const allChars = Object.values(AppState.cosplayConfig.characters);
+  let candidates = allChars.filter(c => c.theme_key === themeKey && c.gender === gender && !exclude.has(c.key));
+  if (candidates.length === 0) {
+    candidates = allChars.filter(c => c.theme_key === themeKey && c.gender === gender);
+  }
+  if (candidates.length === 0) {
+    candidates = allChars.filter(c => c.theme_key === themeKey);
+  }
+  if (candidates.length === 0) return null;
+  return candidates[Math.floor(Math.random() * candidates.length)];
+}
+
 async function renderLineupPage() {
   const grid = document.getElementById('lineup-grid');
   const btn  = document.getElementById('btn-lineup-next');
@@ -1195,15 +1225,19 @@ async function renderLineupPage() {
     await (person.genderPromise || Promise.resolve());
     if (!person.gender) person.gender = Math.random() < 0.5 ? 'male' : 'female';
     try {
-      const res = await fetch('/assign-character', {
+      const res = await fetch(`${API_BASE}/assign-character`, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ theme_key: theme.key, gender: person.gender }),
       });
-      const data = await res.json();
-      person.character = data.character;
+      if (res.ok) {
+        const data = await res.json();
+        person.character = data.character;
+      } else {
+        person.character = pickLocalCharacter(theme.key, person.gender);
+      }
     } catch (err) {
-      console.warn('[LH] assign-character failed:', err.message);
+      person.character = pickLocalCharacter(theme.key, person.gender);
     }
   }
 
@@ -1220,7 +1254,7 @@ function buildLineupGrid() {
   AppState.persons.forEach((person, idx) => {
     const character = person.character;
     const refThumb = character?.reference_image
-      ? `/imgs/cosplay/${character.reference_image.split('/').map(encodeURIComponent).join('/')}`
+      ? `imgs/cosplay/${character.reference_image.split('/').map(encodeURIComponent).join('/')}`
       : null;
 
     const card = document.createElement('div');
@@ -1270,7 +1304,7 @@ async function shuffleCharacter(idx) {
   const theme  = AppState.selectedTheme;
   if (!person || !theme) return;
   try {
-    const res = await fetch('/assign-character', {
+    const res = await fetch(`${API_BASE}/assign-character`, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({
@@ -1279,11 +1313,16 @@ async function shuffleCharacter(idx) {
         exclude_keys:  person.character ? [person.character.key] : [],
       }),
     });
-    const data = await res.json();
-    person.character = data.character;
+    if (res.ok) {
+      const data = await res.json();
+      person.character = data.character;
+    } else {
+      person.character = pickLocalCharacter(theme.key, person.gender, person.character ? [person.character.key] : []);
+    }
     buildLineupGrid();
   } catch (err) {
-    console.warn('[LH] shuffle failed:', err.message);
+    person.character = pickLocalCharacter(theme.key, person.gender, person.character ? [person.character.key] : []);
+    buildLineupGrid();
   }
 }
 
@@ -1300,7 +1339,7 @@ function renderBackgroundGrid() {
 
   pool.forEach(path => {
     const isSelected = AppState.selectedBackground === path;
-    const url = `/imgs/cosplay/${path.split('/').map(encodeURIComponent).join('/')}`;
+    const url = `imgs/cosplay/${path.split('/').map(encodeURIComponent).join('/')}`;
     const tile = document.createElement('div');
     tile.className = 'cursor-pointer relative';
     // Seamless zero-gap mosaic — selection shown via an inset ring (doesn't add
@@ -1423,7 +1462,7 @@ async function startTransform() {
       session_id:            getSessionId(),
       user_replicate_token:  getUserReplicateKey() || undefined,
     };
-    const res = await fetch('/group-transform', {
+    const res = await fetch(`${API_BASE}/group-transform`, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(body),
@@ -1447,7 +1486,8 @@ async function startTransform() {
     setProgress(20, 'AI Processing…', 'The AI is casting your group…');
     beginGroupPolling(AppState.groupId);
   } catch (err) {
-    setTransformError(`Failed to start transformation: ${err.message}`);
+    const hint = !API_BASE ? ' (GitHub Pages is static. If using a remote backend, configure it via localStorage.setItem("lh_api_base", "https://your-backend-url"))' : '';
+    setTransformError(`Failed to start transformation: ${err.message}${hint}`);
   }
 }
 
@@ -1456,7 +1496,7 @@ function beginGroupPolling(groupId) {
 
   AppState.pollTimer = setInterval(async () => {
     try {
-      const res = await fetch(`/group-status/${groupId}`);
+      const res = await fetch(`${API_BASE}/group-status/${groupId}`);
       if (!res.ok) return;
       const job = await res.json();
 
@@ -1513,7 +1553,7 @@ function onGroupTransformComplete(job) {
   AppState.resultImageUrl = job.result_url;
   AppState.resultOrigUrl  = job.original_url;
   AppState.resultQrCode   = job.qr_code;
-  AppState.resultQrUrl    = job.qr_url || `${window.location.origin}/mobile.html?token=${job.token}`;
+  AppState.resultQrUrl    = job.qr_url || new URL(`mobile.html?token=${job.token}`, window.location.href).href;
 
   setProgress(100, 'Done!', 'Your transformation is ready!');
 
@@ -1565,7 +1605,7 @@ function renderResultPage() {
   qrContainer.innerHTML = '';
 
   const qrUrl = AppState.resultQrUrl
-    || `${window.location.origin}/mobile.html?token=${AppState.resultToken}`;
+    || new URL(`mobile.html?token=${AppState.resultToken}`, window.location.href).href;
 
   try {
     new QRCode(qrContainer, {
@@ -1589,13 +1629,13 @@ function renderResultPage() {
 
 async function loadRecentThumbnails() {
   try {
-    const res  = await fetch('/gallery?limit=6');
+    const res  = await fetch(`${API_BASE}/gallery?limit=6`);
     const data = await res.json();
     const grid = document.getElementById('result-recent-grid');
     if (!grid) return;
     grid.innerHTML = '';
     (data.items || []).slice(0, 6).forEach(item => {
-      const src = `/gallery-files/${item.transformed_file}`;
+      const src = `${API_BASE}/gallery-files/${item.transformed_file}`;
       const el  = document.createElement('div');
       el.className = 'aspect-square rounded overflow-hidden bg-surface-container-high opacity-60 hover:opacity-100 transition-opacity cursor-pointer';
       el.onclick = () => navigateTo('gallery');
@@ -1691,7 +1731,7 @@ function startGalleryPoll() {
     if (AppState.currentPage !== 'gallery') { stopGalleryPoll(); return; }
     try {
       const theme = document.getElementById('gallery-filter')?.dataset.value || '';
-      const res   = await fetch(`/gallery/count?theme=${theme}`);
+      const res   = await fetch(`${API_BASE}/gallery/count?theme=${theme}`);
       const { total } = await res.json();
       if (_galleryKnownTotal >= 0 && total !== _galleryKnownTotal) {
         loadGallery(); // new item arrived — silently refresh
@@ -1720,7 +1760,7 @@ async function loadGallery() {
 
   const theme = document.getElementById('gallery-filter')?.dataset.value || '';
   const token = AppState.adminToken || '';
-  const url  = `/gallery?page=1&limit=30&theme=${theme}&admin_token=${token}`;
+  const url  = `${API_BASE}/gallery?page=1&limit=30&theme=${theme}&admin_token=${token}`;
 
   try {
     const res  = await fetch(url);
@@ -1798,7 +1838,7 @@ function buildGalleryCard(item, isAdmin) {
 
 async function loadAdminStats() {
   try {
-    const res  = await fetch(`/admin/stats?admin_token=${AppState.adminToken}`);
+    const res  = await fetch(`${API_BASE}/admin/stats?admin_token=${AppState.adminToken}`);
     const data = await res.json();
     const el = document.getElementById('admin-stat-total');
     if (el) el.textContent = `${data.total_transformations} total`;
@@ -1819,7 +1859,7 @@ async function loadAdminStats() {
 // ══════════════════════════════════════════════════════════════════
 
 function openGalleryDetail(item, isAdmin) {
-  const src = `/gallery-files/${item.transformed_file}`;
+  const src = `${API_BASE}/gallery-files/${item.transformed_file}`;
   const themeName      = item.theme_name || item.destination_name || 'photo';
   const characterNames = (item.characters || []).map(c => c.name).join(', ');
   const filename = `lumina-${themeName}-${(item.token || '').slice(0,8)}.jpg`
@@ -1900,7 +1940,7 @@ function toggleGalleryQr(item) {
 
   const qrContainer = document.getElementById('gallery-detail-qr-display');
   qrContainer.innerHTML = '';
-  const qrUrl = `${window.location.origin}/mobile.html?token=${item.token}`;
+  const qrUrl = new URL(`mobile.html?token=${item.token}`, window.location.href).href;
   try {
     new QRCode(qrContainer, {
       text:         qrUrl,
@@ -1933,7 +1973,7 @@ async function deleteGalleryItem(itemId) {
   if (!AppState.isAdmin) return;
   if (!window.confirm('Delete this image? This cannot be undone.')) return;
   try {
-    const res = await fetch(`/admin/gallery/${itemId}?admin_token=${AppState.adminToken}`, { method: 'DELETE' });
+    const res = await fetch(`${API_BASE}/admin/gallery/${itemId}?admin_token=${AppState.adminToken}`, { method: 'DELETE' });
     if (!res.ok) throw new Error(await res.text());
     loadGallery();
   } catch (err) {
@@ -1944,7 +1984,7 @@ async function deleteGalleryItem(itemId) {
 async function downloadAllGallery() {
   if (!AppState.isAdmin) return;
   const a = document.createElement('a');
-  a.href     = `/admin/gallery/download-all?admin_token=${AppState.adminToken}`;
+  a.href     = `${API_BASE}/admin/gallery/download-all?admin_token=${AppState.adminToken}`;
   a.download = 'lumina-gallery.zip';
   a.click();
 }
@@ -1956,7 +1996,7 @@ async function deleteAllGallery() {
   );
   if (!confirmed) return;
   try {
-    const res = await fetch(`/admin/gallery/all?admin_token=${AppState.adminToken}`, {
+    const res = await fetch(`${API_BASE}/admin/gallery/all?admin_token=${AppState.adminToken}`, {
       method: 'DELETE',
     });
     if (!res.ok) throw new Error((await res.json().catch(()=>({}))).detail || 'Delete failed');
@@ -2020,7 +2060,7 @@ async function doAdminLogin() {
   }
 
   try {
-    const res = await fetch('/admin/login', {
+    const res = await fetch(`${API_BASE}/admin/login`, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ username, password }),
@@ -2049,7 +2089,7 @@ async function doAdminLogin() {
 
 async function doAdminLogout() {
   if (AppState.adminToken) {
-    await fetch(`/admin/logout?admin_token=${AppState.adminToken}`).catch(() => {});
+    await fetch(`${API_BASE}/admin/logout?admin_token=${AppState.adminToken}`).catch(() => {});
     AppState.adminToken = null;
     AppState.isAdmin    = false;
     sessionStorage.removeItem(ADMIN_TOKEN_KEY);
